@@ -12,6 +12,15 @@ objs=cell.o common.o container.o unitcell.o v_compute.o c_loops.o \
      v_base.o wall.o pre_container.o container_prd.o
 src=$(patsubst %.o,%.cc,$(objs))
 
+# Rules for the python module
+PYTHON_INCLUDE = `python-config --includes`
+PYTHON_LIB = `python-config --libs`
+PYTHON_LD = `python-config --ldflags`
+
+# location of the Boost Python include files and library
+BOOST_INC = /usr/include
+BOOST_LIB = /usr/lib
+
 # Makefile rules
 all: libvoro++.a voro++
 
@@ -27,8 +36,14 @@ libvoro++.a: $(objs)
 voro++: libvoro++.a cmd_line.cc
 	$(CXX) $(CFLAGS) -L. -o voro++ cmd_line.cc -lvoro++
 
-%.o: %.cc
-	$(CXX) $(CFLAGS) -c $<
+%.o: %.cc Makefile
+	$(CXX) $(CFLAGS) -fPIC -c $<
+	
+pyvoro.o: pyvoro.cc libvoro++.a Makefile
+	g++ $(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -L. -lvoro++ -c pyvoro.cc
+	
+pyvoro.so: pyvoro.o
+	g++ -shared -Wl,--export-dynamic pyvoro.o -L. -lvoro++ -L$(BOOST_LIB) -lboost_python3 $(PYTHON_LIB) $(PYTHON_LD) -o pyvoro.so
 
 help: Doxyfile $(SOURCE)
 	doxygen Doxyfile
