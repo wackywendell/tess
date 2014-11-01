@@ -1,6 +1,8 @@
-Voro++, a 3D cell-based Voronoi library (http://math.lbl.gov/voro++/)
-By Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory)
+Voro++, a 3D cell-based Voronoi library
 ================================================================
+
+## [Original work](http://math.lbl.gov/voro++/) by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Boost.Python.
+
 Voro++ is a software library for carrying out three-dimensional computations
 of the Voronoi tessellation. A distinguishing feature of the Voro++ library
 is that it carries out cell-based calculations, computing the Voronoi cell
@@ -24,36 +26,36 @@ package contains the C++ source code, example files, miscellaneous utilities
 and documentation. On Linux, Mac OS, and Windows (using Cygwin), the
 compilation and installed can be carried out using GNU Make.
 
-To begin, the user should review the file "config.mk" in the top level
+To begin, the user should review the file `config.mk` in the top level
 directory, to make sure that the compilation and installation settings are
-appropriate for their system. Typing "make" will then compile the static
+appropriate for their system. Typing `make` will then compile the static
 library, command-line utility, and examples. The command-line utility and
-library will appear within the "src" directory.
+library will appear within the `src` directory.
 
 Following successful compilation, the library, command-line utility, and
-documentation can be installed by typing "sudo make install". By default, the
-program files are installed into /usr/local, and it may be necessary to modify
+documentation can be installed by typing `sudo make install`. By default, the
+program files are installed into `/usr/local`, and it may be necessary to modify
 your environment variables in order to access the installed files:
 
 - to use the command-line utility, the variable PATH should contain
-  /usr/local/bin.
+  `/usr/local/bin`.
 - to access the Voro++ man page, the variable MANPATH should contain
-  /usr/local/man.
+  `/usr/local/man`.
 - to access the Voro++ header files, code compilation should include
-  the flag '-I/usr/local/include/voro++'.
+  the flag `-I/usr/local/include/voro++`.
 - to link to the static library, code compilation should include the
-  flags '-L/usr/local/lib' to tell the linker where to look, and then
-  '-lvoro++' to link to the library.
+  flags `-L/usr/local/lib` to tell the linker where to look, and then
+  `-lvoro++` to link to the library.
 
 The library website contains additional notes on setting environment variables,
 and many guides are available on the Internet.
 
-The code can later be uninstalled with "sudo make uninstall". It is also
+The code can later be uninstalled with `sudo make uninstall`. It is also
 possible to use the library and command-line utility without installation by
 calling the files directly once they have been compiled. On systems where the
-user does not have root privileges to install into /usr/local, the "config.mk"
+user does not have root privileges to install into `/usr/local`, the `config.mk`
 file can be modified to install into the user's home directory by setting
-PREFIX=$(HOME). Voro++ supports parallel compilation by using the "make -j <n>"
+`PREFIX=$(HOME)`. Voro++ supports parallel compilation by using the `make -j <n>`
 command where n is the number of threads.
 
 
@@ -70,17 +72,17 @@ Related programs
 No external dependencies are required to compile and run the code, but several
 programs may be useful for analyzing the output:
 
-- The freeware plotting program Gnuplot (available at www.gnuplot.info) can be
+- The freeware plotting program [Gnuplot](www.gnuplot.info) can be
   used for rapid 2D and 3D visualization of the program output.
 
-- The freeware raytracer POV-Ray (available at www.povray.org) can be used for
+- The freeware raytracer [POV-Ray](www.povray.org) can be used for
   high-quality renderings of the program output.
 
 - The reference manual is generated from comments in the source code using
-  Doxygen (available at www.doxygen.org). This package is only required if the
+  [Doxygen](www.doxygen.org). This package is only required if the
   library files are being developed and the reference manuals need to be
   regenerated. The complete reference manual to the current code is available
-  online at http://math.lbl.gov/voro++/doc/refman/
+  [online](http://math.lbl.gov/voro++/doc/refman/).
 
 
 Contents
