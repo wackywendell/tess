@@ -1,6 +1,7 @@
 src/voro++
 src/libvoro++.a
 *.o
+*.so
 examples/walls/torus
 examples/walls/tetrahedron
 examples/walls/frustum
