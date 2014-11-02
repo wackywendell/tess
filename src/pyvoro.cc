@@ -10,12 +10,12 @@ using namespace voro;
 // Helper function for converting std::vector to a python list
 // Taken from http://stackoverflow.com/questions/6157409/stdvector-to-boostpythonlist
 template<class T>
-py::list std_vector_to_py_list(const std::vector<T>& v)
-{
-    py::object get_iter = py::iterator<std::vector<T> >();
-    py::object iter = get_iter(v);
-    py::list l(iter);
-    return l;
+py::list std_vector_to_py_list(const std::vector<T>& v){
+    py::list l;
+    typename std::vector<T>::const_iterator it;
+    for (it = v.begin(); it != v.end(); ++it)
+    l.append(*it);   
+    return l;  
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,56 +25,14 @@ void (container::*container_put)(int, double, double, double) = &container::put;
 
 void (container_poly::*container_poly_put)(int, double, double, double, double) = &container_poly::put;
 
-py::tuple get_first_cell(container& cntr){
-    c_loop_all vl(cntr);
-    voronoicell c;
-    
-    if(vl.start()) do if(cntr.compute_cell(c,vl)) {
-        return py::make_tuple(vl.pid(), c.volume(), c);
-    } while(vl.inc());
-    
-    c.init_octahedron(1);
-    return py::make_tuple(-1, 0, c);
-}
-
-voronoicell get_just_cell(container& cntr){
-    c_loop_all vl(cntr);
-    voronoicell c;
-    
-    if(vl.start()) do if(cntr.compute_cell(c,vl)) {
-        return c;
-    } while(vl.inc());
-    
-    c.init_octahedron(1);
-    return c;
-}
-
-voronoicell get_one_cell(container& cntr){
-    voronoicell c;
-    c.init_octahedron(1);
-    return c;
-}
-
-voronoicell* octahedron(){
-    voronoicell* c = new voronoicell();
-    c->init_octahedron(1);
-    return c;
-}
-
-sptr<voronoicell> octahedron_s(){
-    sptr<voronoicell> c = sptr<voronoicell>(new voronoicell);
-    c->init_octahedron(1);
-    return c;
-}
-
 py::list get_cells(container& cntr){
     c_loop_all vl(cntr);
-    sptr<voronoicell> c = sptr<voronoicell>(new voronoicell());
+    sptr<voronoicell_neighbor> c = sptr<voronoicell_neighbor>(new voronoicell_neighbor());
     py::list my_list = py::list();
     
     if(vl.start()) do if(cntr.compute_cell(*c,vl)) {
-        my_list.append(c);
-        c = sptr<voronoicell>(new voronoicell());
+        my_list.append(py::make_tuple(vl.pid(), c));
+        c = sptr<voronoicell_neighbor>(new voronoicell_neighbor());
     } while(vl.inc());
             
     return my_list;
@@ -88,7 +46,7 @@ py::list get_volumes(container& cntr){
     if(vl.start()) do if(cntr.compute_cell(c,vl)) {
         my_list.append(c.volume());
     } while(vl.inc());
-            
+    
     return my_list;
 }
 
@@ -109,6 +67,12 @@ void container_add(container& cntr, py::list& lst){
     }
 }
 
+py::list vc_neighbors(voronoicell_neighbor &vc){
+    std::vector<int> ns;
+    vc.neighbors(ns);
+    return std_vector_to_py_list(ns);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Instantiate Templates
 //~ 
@@ -123,19 +87,12 @@ void container_add(container& cntr, py::list& lst){
 
 BOOST_PYTHON_MODULE(pyvoro)
 {
-    py::def("octahedron", octahedron, py::return_value_policy<py::manage_new_object>());
-    py::def("octahedrons", octahedron_s);
-    
     py::class_<container>("Container", py::init<double,double,double,double,double,double,
 				int,int,int,bool,bool,bool,int>())
         .def("put", container_put)
         .def("add", container_add)
-        .def("compute_all_cells", &container::compute_all_cells)
         .def("get_cells", get_cells)
-        .def("get_first_cell", get_first_cell)
-        .def("get_just_cell", get_just_cell)
-        .def("get_one_cell", get_one_cell)
-		.def("sum_cell_volumes", &container::sum_cell_volumes)
+ 		.def("sum_cell_volumes", &container::sum_cell_volumes)
 		.def("cell_volumes", get_volumes)
         ;
     py::class_<container_poly>("PolyContainer", py::init<double,double,double,double,double,double,
@@ -154,10 +111,15 @@ BOOST_PYTHON_MODULE(pyvoro)
         .def("number_of_faces", &voronoicell_base::number_of_faces)
     ;
     
-    py::class_<voronoicell, sptr<voronoicell>, py::bases<voronoicell_base> >("VoronoiCell", py::init<>())
+    py::class_<voronoicell, boost::noncopyable, py::bases<voronoicell_base>, sptr<voronoicell> >(
+                "VoronoiCell", py::init<>())
         .def("init", &voronoicell::init)
         .def("init_tetrahedron", &voronoicell::init_tetrahedron)
         .def("init_octahedron", &voronoicell::init_octahedron)
     ;
     
+    py::class_<voronoicell_neighbor, boost::noncopyable, py::bases<voronoicell_base>, sptr<voronoicell_neighbor> >(
+                "VoronoiCellNeighbors", py::init<>())
+        .def("neighbors", vc_neighbors)
+    ;
 }
