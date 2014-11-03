@@ -24,3 +24,5 @@ examples/basic/random_points
 examples/basic/platonic
 examples/basic/import
 html
+.ipynb_checkpoints
+*-testing.*
