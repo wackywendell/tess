@@ -1,5 +1,5 @@
 Voro++, a 3D cell-based Voronoi library
-================================================================
+=======================================
 
 ## [Original work](http://math.lbl.gov/voro++/) by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Boost.Python.
 
@@ -10,13 +10,36 @@ for each particle individually, rather than computing the Voronoi
 tessellation as a global network of vertices and edges. It is particularly
 well-suited for applications that rely on cell-based statistics, where
 features of Voronoi cells (eg. volume, centroid, number of faces) can be
-used to analyze a system of particles
+used to analyze a system of particles.
 
 Voro++ comprises of several C++ classes that can be built as a static library
 and linked to. A command-line utility is also provided that can analyze text
 files of particle configurations and use most of the features of the code.
 Numerous examples are provided to demonstrate the library's features and all of
 these are discussed in detail on the library website.
+
+Pyvoro
+======
+
+This [repository](https://github.com/wackywendell/pyvoro) is a python wrapper 
+around the voro++ library. It is currently not as powerful as the full C++
+library, but contains a number of functions.
+
+Compilation
+-----------
+To make, run `make py` in either the main directory or the `src` directory.
+
+A file named `pyvoro.so` should be created in the `src` directory.
+
+Use
+---
+To use pyvoro, you must `import pyvoro` in Python. For this to work, the directory
+`pyvoro.so` is in must be in your `$PYTHONPATH` variable.
+
+After that, use `import pyvoro` to import the module.
+
+Examples of use are [available here](http://nbviewer.ipython.org/github/wackywendell/pyvoro/blob/boost/examples/Examples.ipynb),
+with the notebook coming from `examples/Examples.ipynb` folder.
 
 
 Compilation - Linux / Mac OS / Windows with Cygwin
