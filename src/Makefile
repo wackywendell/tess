@@ -27,6 +27,8 @@ all: libvoro++.a voro++
 depend:
 	$(CXX) -MM $(src) >Makefile.dep
 
+py: pyvoro.so
+
 include Makefile.dep
 
 libvoro++.a: $(objs)
@@ -51,4 +53,4 @@ help: Doxyfile $(SOURCE)
 clean:
 	rm -f $(objs) voro++ libvoro++.a pyvoro.o pyvoro.so
 
-.PHONY: all help execs depend
+.PHONY: all help execs depend python
