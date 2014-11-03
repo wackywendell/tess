@@ -18,6 +18,13 @@ py::list std_vector_to_py_list(const std::vector<T>& v){
     return l;  
 }
 
+py::list vertex_vector_to_list(const std::vector<double>& v){
+    py::list l;
+    for(uint i=0; i<v.size(); i += 3){
+        l.append(py::make_tuple(v[i], v[i+1], v[i+2]));
+    }
+    return l;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Structs for storing and accessing cell cata
@@ -54,10 +61,60 @@ class NeighborCell {
         inline double total_edge_distance(){return cell.total_edge_distance();}
         inline double surface_area(){return cell.surface_area();}
         inline double number_of_faces(){return cell.number_of_faces();}
+        inline double number_of_edges(){return cell.number_of_edges();}
         
         py::list neighbors(){
             std::vector<int> ns;
             cell.neighbors(ns);
+            return std_vector_to_py_list(ns);
+        }
+        
+        py::list vertices(){
+            std::vector<double> verts;
+            cell.vertices(x,y,z,verts);
+            return vertex_vector_to_list(verts);
+        }
+        
+        py::list normals(){
+            std::vector<double> verts;
+            cell.normals(verts);
+            return vertex_vector_to_list(verts);
+        }
+        
+        py::list face_vertices(){
+            std::vector<int> f_verts;
+            py::list l;
+            for(uint i=0; i<f_verts.size(); i += f_verts[i] + 1){
+                py::list fs;
+                for(uint j=0; j<i; ++j){
+                    fs.append(f_verts[i+j+1]);
+                }
+                l.append(fs);
+            }
+            return l;
+        }
+        
+        py::list face_areas(){
+            std::vector<double> ns;
+            cell.face_areas(ns);
+            return std_vector_to_py_list(ns);
+        }
+        
+        py::list face_perimeters(){
+            std::vector<double> ns;
+            cell.face_perimeters(ns);
+            return std_vector_to_py_list(ns);
+        }
+        
+        py::list face_orders(){
+            std::vector<int> ns;
+            cell.face_orders(ns);
+            return std_vector_to_py_list(ns);
+        }
+        
+        py::list vertex_orders(){
+            std::vector<int> ns;
+            cell.vertex_orders(ns);
             return std_vector_to_py_list(ns);
         }
 };
@@ -177,26 +234,15 @@ BOOST_PYTHON_MODULE(pyvoro)
             .def("surface_area", &NeighborCell::surface_area)
             .def("centroid", &NeighborCell::centroid)
             .def("number_of_faces", &NeighborCell::number_of_faces)
+            .def("number_of_edges", &NeighborCell::number_of_edges)
+            .def("vertices", &NeighborCell::vertices, "Cartesian coordinates of the vertices of this cell")
+            .def("face_vertices", &NeighborCell::face_vertices, "\
+A list of the index of each vertices for each face.\
+Each inner list corresponds to one face, with each index in that list corresponding to one vertex.")
+            .def("face_areas", &NeighborCell::face_areas)
+            .def("face_perimeters", &NeighborCell::face_perimeters)
+            .def("normals", &NeighborCell::normals)
+            .def("face_orders", &NeighborCell::face_orders, "a list of the number of sides of each face.")
+            .def("vertex_orders", &NeighborCell::vertex_orders)
         ;
-        
-    //~ py::class_<voronoicell_base>("VoronoiCellBase", py::init<>())
-        //~ .def("volume", &voronoicell_base::volume)
-        //~ .def("max_radius_squared", &voronoicell_base::max_radius_squared)
-        //~ .def("total_edge_distance", &voronoicell_base::total_edge_distance)
-        //~ .def("surface_area", &voronoicell_base::surface_area)
-        //~ .def("centroid", cell_centroid)
-        //~ .def("number_of_faces", &voronoicell_base::number_of_faces)
-    //~ ;
-    //~ 
-    //~ py::class_<voronoicell, boost::noncopyable, py::bases<voronoicell_base>, sptr<voronoicell> >(
-                //~ "VoronoiCell", py::init<>())
-        //~ .def("init", &voronoicell::init)
-        //~ .def("init_tetrahedron", &voronoicell::init_tetrahedron)
-        //~ .def("init_octahedron", &voronoicell::init_octahedron)
-    //~ ;
-    //~ 
-    //~ py::class_<voronoicell_neighbor, boost::noncopyable, py::bases<voronoicell_base>, sptr<voronoicell_neighbor> >(
-                //~ "VoronoiCellNeighbors", py::init<>())
-        //~ .def("neighbors", vc_neighbors)
-    //~ ;
 }
