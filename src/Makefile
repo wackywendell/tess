@@ -39,7 +39,7 @@ voro++: libvoro++.a cmd_line.cc
 %.o: %.cc Makefile
 	$(CXX) $(CFLAGS) -fPIC -c $<
 	
-pyvoro.o: pyvoro.cc libvoro++.a Makefile
+pyvoro.o: pyvoro.cc libvoro++.a
 	g++ $(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -L. -lvoro++ -c pyvoro.cc
 	
 pyvoro.so: pyvoro.o
