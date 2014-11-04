@@ -202,8 +202,7 @@ py::list vc_neighbors(voronoicell_neighbor &vc){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Make the Python Module
 
-BOOST_PYTHON_MODULE(pyvoro)
-{
+BOOST_PYTHON_MODULE(pyvoro){
     py::class_<container>("Container", py::init<double,double,double,double,double,double,
 				int,int,int,bool,bool,bool,int>())
         .def("put", container_put)
