@@ -1,6 +1,8 @@
 Voro++, a 3D cell-based Voronoi library
 =======================================
 
+Note that this is deprecated in favor of the original [https://github.com/joe-jordan/pyvoro](pyvoro), which I did not realize existed at the time I made this.
+
 ## [Original work](http://math.lbl.gov/voro++/) by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Boost.Python.
 
 Voro++ is a software library for carrying out three-dimensional computations
