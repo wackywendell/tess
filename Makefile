@@ -5,7 +5,7 @@
 # Date   : August 30th 2011
 
 # Tell make that these are phony targets
-.PHONY: all py help clean install uninstall
+.PHONY: all help clean install uninstall
 
 include config.mk
 
@@ -13,11 +13,7 @@ include config.mk
 all:
 	$(MAKE) -C src
 	$(MAKE) -C examples
-#	$(MAKE) -C src py
 
-#py:
-#	$(MAKE) -C src py
-	
 # Build the help files (with Doxygen)
 help:
 	$(MAKE) -C src help
