@@ -27,7 +27,7 @@ all: libvoro++.a voro++
 depend:
 	$(CXX) -MM $(src) >Makefile.dep
 
-py: pyvoro.so
+#py: tess.so
 
 include Makefile.dep
 
@@ -41,16 +41,17 @@ voro++: libvoro++.a cmd_line.cc
 %.o: %.cc Makefile
 	$(CXX) $(CFLAGS) -fPIC -c $<
 	
-pyvoro.o: pyvoro.cc libvoro++.a
-	g++ $(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -L. -lvoro++ -c pyvoro.cc
+#tess.o: tess.cc libvoro++.a
+#	g++ $(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC -L. -lvoro++ -c tess.cc
 	
-pyvoro.so: pyvoro.o
-	g++ -shared -Wl,--export-dynamic pyvoro.o -L. -lvoro++ -L$(BOOST_LIB) -lboost_python3 $(PYTHON_LIB) $(PYTHON_LD) -o pyvoro.so
+#tess.so: tess.o
+#	g++ -shared -Wl,--export-dynamic tess.o -L. -lvoro++ -L$(BOOST_LIB) -lboost_python3 $(PYTHON_LIB) $(PYTHON_LD) -o tess.so
 
 help: Doxyfile $(SOURCE)
 	doxygen Doxyfile
 
 clean:
-	rm -f $(objs) voro++ libvoro++.a pyvoro.o pyvoro.so
+	rm -f $(objs) voro++ libvoro++.a 
+	#tess.o tess.so
 
 .PHONY: all help execs depend python

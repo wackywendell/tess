@@ -130,37 +130,27 @@ template <class T>
 py::list get_cells(T& cntr){
     c_loop_all vl(cntr);
     sptr<NeighborCell> c = sptr<NeighborCell>(new NeighborCell());
-    py::list my_list = py::list();
+    //py::list my_list = py::list();
+    std::vector<sptr<NeighborCell> > vec = std::vector<sptr<NeighborCell> >(cntr.total_particles());
+    int vcells_left = cntr.total_particles();
     
     if(vl.start()) do if(cntr.compute_cell(c->cell,vl)) {
         c->init(vl);
-        my_list.append(c);
+        assert(c.id <= cntr.total_particles());
+        vec[c->id] = c;
         c = sptr<NeighborCell>(new NeighborCell());
+        vcells_left -= 1;
     } while(vl.inc());
-            
-    return my_list;
+    
+    if (vcells_left != 0) {
+        return py::list();
+    }
+    
+    return std_vector_to_py_list(vec);
 }
 
 inline py::list get_cells_container(container& cntr){return get_cells(cntr);}
 inline py::list get_cells_container_poly(container_poly& cntr){return get_cells(cntr);}
-
-py::list get_volumes(container& cntr){
-    c_loop_all vl(cntr);
-    voronoicell c;
-    py::list my_list = py::list();
-    
-    if(vl.start()) do if(cntr.compute_cell(c,vl)) {
-        my_list.append(c.volume());
-    } while(vl.inc());
-    
-    return my_list;
-}
-
-py::tuple cell_centroid(voronoicell_base& vc){
-    double x,y,z;
-    vc.centroid(x,y,z);
-    return py::make_tuple(x,y,z);
-}
 
 // Adapted from http://stackoverflow.com/questions/3761391/boostpython-python-list-to-stdvector
 void container_add(container& cntr, py::list& lst){
@@ -190,6 +180,14 @@ py::list vc_neighbors(voronoicell_neighbor &vc){
     return std_vector_to_py_list(ns);
 }
 
+template <class T>
+py::tuple get_widths(T& cntr){
+    return py::make_tuple(cntr.bx-cntr.ax, cntr.by-cntr.ay, cntr.bz-cntr.az);
+}
+
+inline py::tuple get_widths_container(container& cntr){return get_widths(cntr);}
+inline py::tuple get_widths_container_poly(container_poly& cntr){return get_widths(cntr);}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Instantiate Templates
 //~ 
@@ -202,21 +200,21 @@ py::list vc_neighbors(voronoicell_neighbor &vc){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Make the Python Module
 
-BOOST_PYTHON_MODULE(pyvoro){
+BOOST_PYTHON_MODULE(tess){
     py::class_<container>("Container", py::init<double,double,double,double,double,double,
 				int,int,int,bool,bool,bool,int>())
         .def("put", container_put)
         .def("add", container_add)
         .def("get_cells", get_cells_container)
+        .def("get_widths", get_widths_container)
  		.def("sum_cell_volumes", &container::sum_cell_volumes)
-		.def("cell_volumes", get_volumes)
         ;
     py::class_<container_poly>("ContainerPoly", py::init<double,double,double,double,double,double,
 				int,int,int,bool,bool,bool,int>())
         .def("put", container_poly_put)
         .def("add", container_poly_add)
         .def("get_cells", get_cells_container_poly)
-        .def("compute_all_cells", &container_poly::compute_all_cells)
+        .def("get_widths", get_widths_container_poly)
 		.def("sum_cell_volumes", &container_poly::sum_cell_volumes)
         ;
         

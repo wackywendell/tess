@@ -26,3 +26,5 @@ examples/basic/import
 html
 .ipynb_checkpoints
 *-testing.*
+dist
+

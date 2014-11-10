@@ -13,10 +13,10 @@ include config.mk
 all:
 	$(MAKE) -C src
 	$(MAKE) -C examples
-	$(MAKE) -C src py
+#	$(MAKE) -C src py
 
-py:
-	$(MAKE) -C src py
+#py:
+#	$(MAKE) -C src py
 	
 # Build the help files (with Doxygen)
 help:
