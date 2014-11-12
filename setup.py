@@ -3,8 +3,6 @@ import os.path
 import sys
 import glob
 
-# define the name of the extension to use
-extension_name    = 'tess'
 extension_version = '0.1'
  
 # define the directories to search for include files
@@ -23,10 +21,13 @@ library_dirs = [ '/usr/local/lib' ]
 libraries = [ 'boost_python3' if sys.version_info.major == 3 else 'boost_python' ]
  
 # define the source files for the extension
-source_files = ['pywrapper.cc', 'cell.cc', 'common.cc', 'container.cc', 'unitcell.cc', 
-                'v_compute.cc', 'c_loops.cc', 'v_base.cc', 'wall.cc',
-                'pre_container.cc', 'container_prd.cc']
-source_files = [os.path.join('src', fname) for fname in source_files]
+source_files = ['src/voro++.cc', 'tess/voro.cc']
+
+extension = Extension(
+            'tess._voro', source_files, 
+            include_dirs=include_dirs,
+            library_dirs=library_dirs,
+            libraries=libraries)
 
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
@@ -36,7 +37,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 # create the extension and add it to the python distribution
-setup( name=extension_name, 
+setup( name='tess', 
         version=extension_version, 
         author="Wendell Smith",
         author_email="wackywendell@gmail.com",
@@ -54,9 +55,8 @@ setup( name=extension_name,
             "Programming Language :: Python :: 3",
             "License :: OSI Approved :: BSD License",
         ],
-
-        ext_modules=[Extension(
-            extension_name, source_files, 
-            include_dirs=include_dirs,
-            library_dirs=library_dirs,
-            libraries=libraries)])
+        
+        packages=['tess'],
+        package_dir={"tess": "tess"},
+        
+        ext_modules=[extension])
