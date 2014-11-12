@@ -117,6 +117,10 @@ class NeighborCell {
             cell.vertex_orders(ns);
             return std_vector_to_py_list(ns);
         }
+        
+        inline std::string to_string(){
+            return "<Cell " + boost::lexical_cast<std::string>(id) + ">";
+        };
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,7 +204,7 @@ inline py::tuple get_widths_container_poly(container_poly& cntr){return get_widt
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Make the Python Module
 
-BOOST_PYTHON_MODULE(tess){
+BOOST_PYTHON_MODULE(_voro){
     py::class_<container>("Container", py::init<double,double,double,double,double,double,
 				int,int,int,bool,bool,bool,int>())
         .def("put", container_put)
@@ -241,5 +245,9 @@ Each inner list corresponds to one face, with each index in that list correspond
             .def("normals", &NeighborCell::normals)
             .def("face_orders", &NeighborCell::face_orders, "a list of the number of sides of each face.")
             .def("vertex_orders", &NeighborCell::vertex_orders)
+            
+            // from http://cprohm.de/article/wrapping-c-code-using-boost-python.html
+            .def("__str__", &NeighborCell::to_string)
+            .def("__repr__", &NeighborCell::to_string)
         ;
 }

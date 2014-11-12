@@ -2,6 +2,7 @@ src/voro++
 src/libvoro++.a
 *.o
 *.so
+*.pyc
 examples/walls/torus
 examples/walls/tetrahedron
 examples/walls/frustum
@@ -25,6 +26,8 @@ examples/basic/platonic
 examples/basic/import
 html
 .ipynb_checkpoints
+*.egg-info
 *-testing.*
-dist
-
+/dist
+/build
+__pycache__
