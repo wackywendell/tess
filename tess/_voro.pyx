@@ -28,7 +28,25 @@ cdef extern from "voro++.hh" namespace "voro":
         
     cdef cppclass voronoicell_neighbor:
         voronoicell()
+        void centroid(double &cx, double &cy, double &cz)
         double volume()
+        double max_radius_squared()
+        double total_edge_distance()
+        double surface_area()
+        double number_of_faces()
+        double number_of_edges()
+        
+        void vertex_orders(vector[int])
+#~         void vertices(std::vector<double> &v)
+#~ 		void vertices(double x,double y,double z,std::vector<double> &v)
+#~ 		void output_vertices(double x,double y,double z,FILE *fp=stdout)
+#~ 		void face_areas(std::vector<double> &v)
+#~         void face_orders(std::vector<int> &v)
+#~         void face_freq_table(std::vector<int> &v)
+#~         void face_vertices(std::vector<int> &v)
+#~         void face_perimeters(std::vector<double> &v)
+#~         void normals(std::vector<double> &v)
+#~         void neighbors(std::vector<int> &v)
     
     cdef cppclass c_loop_all:
         c_loop_all(container_base&)
@@ -40,13 +58,50 @@ cdef extern from "voro++.hh" namespace "voro":
 
 cdef class Cell:
     cdef voronoicell_neighbor *thisptr
+    cdef int _id
+    cdef double x,y,z
+    cdef double r
+    
     def __cinit__(self):
         self.thisptr = new voronoicell_neighbor()
     
     def __dealloc__(self):
         del self.thisptr
     
+    @property
+    def pos(self):
+        return (self.x, self.y, self.z)
+    
     def volume(self): return self.thisptr.volume()
+    def max_radius_squared(self): return self.thisptr.max_radius_squared()
+    def total_edge_distance(self): return self.thisptr.total_edge_distance()
+    def surface_area(self): return self.thisptr.surface_area()
+    def number_of_faces(self): return self.thisptr.number_of_faces()
+    def number_of_edges(self): return self.thisptr.number_of_edges()
+    
+    def centroid(self):
+            cdef double cx = 0
+            cdef double cy = 0
+            cdef double cz = 0
+            self.thisptr.centroid(cx,cy,cz)
+            x,y,z = self.pos
+            return (cx+x,cy+y,cz+z)
+    
+    def vertex_orders(self):
+        cdef vector[int] v
+        self.thisptr.vertex_orders(v)
+        return v
+        
+#~         void vertices(std::vector<double> &v)
+#~ 		void vertices(double x,double y,double z,std::vector<double> &v)
+#~ 		void output_vertices(double x,double y,double z,FILE *fp=stdout)
+#~ 		void face_areas(std::vector<double> &v)
+#~         void face_orders(std::vector<int> &v)
+#~         void face_freq_table(std::vector<int> &v)
+#~         void face_vertices(std::vector<int> &v)
+#~         void face_perimeters(std::vector<double> &v)
+#~         void normals(std::vector<double> &v)
+#~         void neighbors(std::vector<int> &v)
 
 cdef class _Container:
     cdef container *thisptr
@@ -69,9 +124,6 @@ cdef class _Container:
         
         cdef int vcells_left = self.thisptr.total_particles()
         cdef int id
-        cdef double x = 0
-        cdef double y = 0
-        cdef double z = 0
         
         mylist = [None for _ in range(vcells_left)]
         
@@ -81,12 +133,11 @@ cdef class _Container:
         
         while True:
             if(self.thisptr.compute_cell(dereference(cell.thisptr), dereference(vl))):
-                cell.id = vl.pid()
-                assert(cell.id <= self.thisptr.total_particles())
-                mylist[cell.id] = cell
+                cell._id = vl.pid()
+                assert(cell._id <= self.thisptr.total_particles())
+                mylist[cell._id] = cell
                 
-                vl.pos(x,y,z)
-                cell.pos = (x,y,z)
+                vl.pos(cell.x,cell.y,cell.z)
                 
                 vcells_left -= 1;
             if not vl.inc(): break
@@ -95,6 +146,7 @@ cdef class _Container:
         
         if vcells_left != 0:
             raise ValueError("Computation failed")
+        return mylist
 
 cdef class _ContainerPoly:
     cdef container_poly *thisptr
@@ -129,12 +181,11 @@ cdef class _ContainerPoly:
         
         while True:
             if(self.thisptr.compute_cell(dereference(cell.thisptr), dereference(vl))):
-                cell.id = vl.pid()
-                assert(cell.id <= self.thisptr.total_particles())
-                mylist[cell.id] = cell
+                cell._id = vl.pid()
+                assert(cell._id <= self.thisptr.total_particles())
+                mylist[cell._id] = cell
                 
-                vl.pos(x,y,z)
-                cell.pos = (x,y,z)
+                vl.pos(cell.x,cell.y,cell.z)
                 
                 vcells_left -= 1;
             if not vl.inc(): break
@@ -143,6 +194,7 @@ cdef class _ContainerPoly:
         
         if vcells_left != 0:
             raise ValueError("Computation failed")
+        return mylist
 
 class Container(list):
     def __init__(self, points, limits=1.0, periodic=False, radii=None, blocks=None):
