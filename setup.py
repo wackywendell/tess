@@ -8,7 +8,7 @@ try:
 except ImportError:
     cythonize = None
 
-extension_version = '0.1'
+extension_version = '0.1.2'
 
 # Utility function to read the README file.
 # Used for the long_description.  It's nice, because now 1) we have a top level
@@ -40,7 +40,7 @@ class sdist(_sdist):
         from Cython.Build import cythonize
         
         # Make sure the compiled Cython files in the distribution are up-to-date
-        cythonize(['cython/mycythonmodule.pyx'])
+        cythonize(['tess/_voro.pyx'])
         _sdist.run(self)
 
 cmdclass = dict(sdist = sdist)
@@ -50,10 +50,10 @@ setup( name='tess',
         version=extension_version, 
         author="Wendell Smith",
         author_email="wackywendell@gmail.com",
-        description = ("A odule for calculating and analyzing Voronoi tesselations"),
+        description = ("A module for calculating and analyzing Voronoi tesselations"),
         license = "BSD",
         keywords = "laguerre voronoi tesselation voro++",
-        url = "https://github.com/wackywendell/voronoia",
+        url = "https://github.com/wackywendell/tess",
         long_description=read('README.rst'),
         classifiers=[
             "Development Status :: 3 - Alpha",
