@@ -79,7 +79,10 @@ class BasicCubic(CubicLattice, TestCase):
         self.assertAlmostEqual(cz, 0.5)
     
     def test_face_areas(self):
-        self.assertAlmostEqual(self.cells[0].face_areas(), [1.0]*6)
+        areas = self.cells[0].face_areas()
+        self.assertEqual(len(areas), 6)
+        for a in areas:
+            self.assertAlmostEqual(a, 1.0)
 
 class CubicAlternating(CubicLattice, TestCase):
     def setUp(self):
