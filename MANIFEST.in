@@ -1,0 +1,4 @@
+include README.rst
+include LICENSE
+recursive-include src *.cc *.hh
+include tess/_voro.pyx
