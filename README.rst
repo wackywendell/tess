@@ -1,8 +1,8 @@
 Tess, a 3D cell-based Voronoi library based on voro++
-==============================================
+=====================================================
 
-`Original work`_ by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Boost.Python.
--------------
+`Original work`_ by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Cython.
+------------------------------------------------------------------------------------------------------------------------------------------
 
 Voro++ is a software library for carrying out three-dimensional computations
 of the Voronoi tessellation. A distinguishing feature of the Voro++ library
@@ -22,7 +22,7 @@ these are discussed in detail on the library website.
 .. _Original work: http://math.lbl.gov/voro++/
 
 Tess
-======
+====
 
 `This repository`_ is a python wrapper 
 around the voro++ library. It is currently not as powerful as the full C++
