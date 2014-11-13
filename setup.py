@@ -1,7 +1,12 @@
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Build import cythonize
+from distutils.command.sdist import sdist as _sdist
 import os.path
+
+try:
+    from Cython.Build import cythonize
+except ImportError:
+    cythonize = None
 
 extension_version = '0.1'
 
@@ -11,13 +16,34 @@ extension_version = '0.1'
 # string in below ...
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-    
-ext = Extension("tess._voro",
+
+if cythonize is not None:
+    print("Building with Cython.")
+    ext = cythonize(Extension("tess._voro",
               sources=["tess/_voro.pyx", "src/voro++.cc"],
               include_dirs=["src"],
               language="c++",
-              )
-extensions = cythonize(ext)
+              ))
+else:
+    print("Cython not found, using prebuilt file.")
+    ext = [Extension("tess._voro",
+              sources=["tess/_voro.cpp", "src/voro++.cc"],
+              include_dirs=["src"],
+              language="c++",
+              )]
+
+# Set sdist to make the .cpp file
+# from http://stackoverflow.com/a/18418524/4190270
+class sdist(_sdist):
+    def run(self):
+        # this is already imported, but the import might have failed. If so, raise an ImportError now.
+        from Cython.Build import cythonize
+        
+        # Make sure the compiled Cython files in the distribution are up-to-date
+        cythonize(['cython/mycythonmodule.pyx'])
+        _sdist.run(self)
+
+cmdclass = dict(sdist = sdist)
 
 # create the extension and add it to the python distribution
 setup( name='tess', 
@@ -42,4 +68,6 @@ setup( name='tess',
         packages=['tess'],
         package_dir={"tess": "tess"},
         
-        ext_modules = extensions)
+        ext_modules = ext,
+        cmdclass=cmdclass,
+        )
