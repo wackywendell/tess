@@ -54,7 +54,7 @@ setup( name='tess',
         license = "BSD",
         keywords = "laguerre voronoi tesselation voro++",
         url = "https://github.com/wackywendell/voronoia",
-        long_description=read('README.md'),
+        long_description=read('README.rst'),
         classifiers=[
             "Development Status :: 3 - Alpha",
             "Topic :: Scientific/Engineering :: Mathematics",
