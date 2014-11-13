@@ -64,10 +64,6 @@ class Container(list):
             
             for n,(x,y,z),r in zip(range(len(points)), points, radii):
                 self._container.put(n, roundedoff(x,lx,px), roundedoff(y,ly,py), roundedoff(z,lz,pz), float(r))
-            
-            cells = self._container.get_cells()
-            list.__init__(self, cells)
-            
         else:
             # no radii => use voro._Container
             self._container = _Container(0,lx, 0,ly, 0,lz,         # limits
@@ -77,8 +73,8 @@ class Container(list):
             for n,(x,y,z) in enumerate(points):
                 self._container.put(n, roundedoff(x,lx,px), roundedoff(y,ly,py), roundedoff(z,lz,pz))
             
-            cells = self._container.get_cells()
-            list.__init__(self, cells)
+        cells = self._container.get_cells()
+        list.__init__(self, cells)
         
         # Sometimes a _Container has calculation issues. That can lead to the following.
         if len(self) != len(points):
