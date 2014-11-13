@@ -1,7 +1,7 @@
 Tess, a 3D cell-based Voronoi library based on voro++
 ==============================================
 
-[Original work](http://math.lbl.gov/voro++/) by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Boost.Python.
+`Original work`_ by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Boost.Python.
 -------------
 
 Voro++ is a software library for carrying out three-dimensional computations
@@ -19,26 +19,32 @@ files of particle configurations and use most of the features of the code.
 Numerous examples are provided to demonstrate the library's features and all of
 these are discussed in detail on the library website.
 
+.. _Original work: http://math.lbl.gov/voro++/
+
 Tess
 ======
 
-This [repository](https://github.com/wackywendell/tess) is a python wrapper 
+`This repository`_ is a python wrapper 
 around the voro++ library. It is currently not as powerful as the full C++
 library, but contains a number of functions.
 
+.. _This repository: https://github.com/wackywendell/tess
+
 Compilation
 -----------
-To make, run `python setup.py build` in either the main directory or the `src` directory.
+To make, run ``python setup.py build_ext`` in either the main directory or the ``src`` directory.
 
-To install, run `python setup.py install --user` to install to your home directory (recommended), or
-`sudo python setup.py install` to install to the main setup directory.
+To install, run ``python setup.py install --user`` to install to your home directory (recommended), or
+``sudo python setup.py install`` to install to the main setup directory.
 
 Use
 ---
 After installation, use `import tess` to import the module.
 
-Examples of use are [available here](http://nbviewer.ipython.org/github/wackywendell/tess/blob/boost/examples/Examples.ipynb),
-with the notebook coming from `examples/Examples.ipynb` folder.
+Examples of use are `available here`_,
+with the notebook being rendered from ``examples/Examples.ipynb``.
+
+.. _available here: http://nbviewer.ipython.org/github/wackywendell/tess/blob/master/examples/Examples.ipynb
 
 Voro++ Copyright Notice
 =======================
