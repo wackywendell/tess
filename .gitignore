@@ -3,6 +3,7 @@ src/libvoro++.a
 *.o
 *.so
 *.pyc
+tess/_voro.cpp
 examples/walls/torus
 examples/walls/tetrahedron
 examples/walls/frustum
