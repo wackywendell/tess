@@ -54,8 +54,8 @@ class CubicLattice(LatticeTest):
         return pts, r
         
     def setUp(self):
-        pts, _ = self.get_points(r2=0.5)
-        self.cells = Container(pts, self.n, periodic=False)
+        self.pts, self.r = self.get_points(r2=0.5)
+        self.cells = Container(self.pts, self.n, periodic=False)
     
     def test_str(self):
         self.assertEqual(str(self.cells[0]), '<Cell 0>')
@@ -83,13 +83,21 @@ class BasicCubic(CubicLattice, TestCase):
         self.assertEqual(len(areas), 6)
         for a in areas:
             self.assertAlmostEqual(a, 1.0)
+    
+    def test_radii(self):
+        for c,r in zip(self.cells, self.r):
+            self.assertAlmostEqual(c.radius, 0)
 
 class CubicAlternating(CubicLattice, TestCase):
     def setUp(self):
-        pts, r = self.get_points(r2=0.6)
-        self.cells = Container(pts, self.n, radii=r, periodic=True)
+        self.pts, self.r = self.get_points(r2=0.6)
+        self.cells = Container(self.pts, self.n, radii=self.r, periodic=True)
         
     def test_volumes(self): self.volumes([1.295031, 0.704969])
+    
+    def test_radii(self):
+        for c,r in zip(self.cells, self.r):
+            self.assertAlmostEqual(c.radius, r)
 
 class FCC(LatticeTest, TestCase):
     order = 0.57452425971404164

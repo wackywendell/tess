@@ -105,6 +105,7 @@ You may want to check that all points are within the box, and none are overlappi
         import numpy as np
         
         bonds = self._get_bond_normals()
+        Nb = np.sum([len(blst) for blst in bonds])
         if not local:
             bonds = [np.concatenate(bonds)]
         
@@ -112,7 +113,14 @@ You may want to check that all points are within the box, and none are overlappi
         for blst in bonds:
             blst = np.array(blst)
             xyz, A = blst[:,:3], blst[:,3]
-            Qs.append(orderQ(l, xyz, weights=(A if weighted else 1)))
+            Q = orderQ(l, xyz, weights=(A if weighted else 1))
+            if local:
+                Q = Q * float(np.shape(xyz)[0])
+            Qs.append(Q)
+        if local:
+            return np.sum(Qs) / Nb
+        else:
+            assert(len(Qs) == 1)
         return np.mean(Qs)
 
 def cart_to_spher(xyz):
@@ -150,6 +158,6 @@ def orderQ(l, xyz, weights=1):
     weights /= np.sum(weights)
     mmeans = np.zeros(2*l+1, dtype=float)
     for m in range(-l, l+1):
-        sph_weighted = sph_harm(m, l, phi, theta).dot(weights)
+        sph_weighted = sph_harm(m, l, phi, theta).dot(weights) # Average of Y_{6m}
         mmeans[m] = abs(sph_weighted)**2
     return np.sqrt(4*np.pi/(2*l+1) * np.sum(mmeans))
