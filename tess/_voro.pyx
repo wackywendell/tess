@@ -53,6 +53,7 @@ cdef extern from "voro++.hh" namespace "voro":
         cbool inc()
         int pid()
         void pos(double &x, double &y, double &z)
+        void pos(int &pid, double &x, double &y, double &z, double &r)
         
 
 cdef class Cell:
@@ -70,6 +71,10 @@ cdef class Cell:
     @property
     def pos(self):
         return (self.x, self.y, self.z)
+    
+    @property
+    def radius(self):
+        return self.r
     
     @property
     def id(self):
@@ -181,6 +186,7 @@ cdef class Container:
                 assert(cell._id <= self.thisptr.total_particles())
                 
                 vl.pos(cell.x,cell.y,cell.z)
+                cell.r = 0
                 mylist[cell._id] = cell
                 
                 vcells_left -= 1
@@ -223,10 +229,8 @@ cdef class ContainerPoly:
         
         while True:
             if(self.thisptr.compute_cell(dereference(cell.thisptr), dereference(vl))):
-                cell._id = vl.pid()
+                vl.pos(cell._id, cell.x,cell.y,cell.z,cell.r)
                 assert(cell._id <= self.thisptr.total_particles())
-                
-                vl.pos(cell.x,cell.y,cell.z)
                 mylist[cell._id] = cell
                 
                 vcells_left -= 1
