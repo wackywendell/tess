@@ -1,6 +1,9 @@
 Tess, a 3D cell-based Voronoi library based on voro++
 =====================================================
 
+.. image:: https://travis-ci.org/wackywendell/tess.svg?branch=master
+    :target: https://travis-ci.org/wackywendell/tess
+
 `Original work`_ by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). This repository includes Python bindings, using Cython.
 ------------------------------------------------------------------------------------------------------------------------------------------
 
