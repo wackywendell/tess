@@ -1,34 +1,32 @@
 from ._voro import Container as _Container, ContainerPoly as _ContainerPoly, Cell
 
 class Container(list):
-    """A container of Voronoi cells. This is the main entry point into the ``tess`` module. After
-    creation, this will be a ``list`` of ``Cell`` objects.
+    """A container of Voronoi cells.
     
-    The ``Container`` must be rectilinear, and can have solid boundary conditions, periodic boundary
-    conditions, or a mix of the two. 
+    This is the main entry point into the :mod:`tess` module. After creation, this will be a `list` 
+    of :class:`Cell` objects.
     
-        :param arg1: description
-        :param arg2: description
-        :type arg1: type description
-        :type arg1: type description
-        :return: return description
-        :rtype: the return type description
+    The :class:`Container` must be rectilinear, and can have solid boundary conditions, periodic 
+    boundary conditions, or a mix of the two.
     
     >>> c = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
     >>> [round(v.volume(), 3) for v in c]
     [13.5, 13.5]
     
-    See ``__init__`` for information on how to create a ``Container``, and see ``Cell`` for more 
-    information.
+    Parameters
+    ----------
+    points : iterable of iterable of `float`
+        The coordinates of the points, size Nx3.
+    limits : `float` or 3-tuple of float
+        The box limits
+    periodic : `bool` or 3-tuple of `bool` (optional)
+        Periodicity of the x, y, and z walls
+    radii: iterable of `float` (optional)
+        for unequally sized particles, for generating a Laguerre transformation
     """
     
     def __init__(self, points, limits=1.0, periodic=False, radii=None, blocks=None):
-        """Get the voronoi cells for a given set of points.
-        
-        points: an Nx3 iterable of floating point numbers denoting the coordinates.
-        limits: the size of the box. May be a ``float`` (for a cubic box), or a 3-tuple.
-        periodic: a ``bool`` or 3-tuple of ``bool``s representing wall periodicity
-        """
+        """Get the voronoi cells for a given set of points."""
         # make px, py, pz from periodic, whether periodic is a 3-tuple or bool
         try:
             px, py, pz = periodic
@@ -116,13 +114,49 @@ You may want to check that all points are within the box, and none are overlappi
         ]
 
     def order(self, l=6, local=False, weighted=True):
-        """Returns crystalline order parameter $Q_l$ (such as $Q_6$).
+        r"""Returns crystalline order parameter :math:`Q_l` (such as :math:`Q_6`).
         
         Requires numpy and scipy.
         
-        l is the which Q you want (6 is standard, for detecting hexagonal lattices)
-        local is whether to calculate the Local Q6 or Global Q6
-        weighted is whether or not to weight by area of the faces of each polygonal side
+        Parameters
+        ----------
+        l : int
+            Defines which :math:`Q_l` you want (6 is standard, for detecting hexagonal lattices)
+        local : bool
+            Calculate Local :math:`Q_6` (true) or Global :math:`Q_6`
+        weighted : bool
+            Whether or not to weight by area the faces of each polygonal side
+        
+        Notes
+        -----
+        
+        For ``local=False``, this calculates
+        
+        .. math:: 
+            Q_l = \sqrt{\frac{4 \pi}{2 l + 1}\sum_{m=-l}^{l} \left| 
+                    \sum_{i=1}^{N_b} w_i Y_{lm}\left(\theta_i, \phi_i \right) \right|^2}
+        
+        where:
+        
+        :math:`N_b` is the number of bonds
+        
+        :math:`\theta_i` and :math:`\phi_i` are the angles of each bond :math:`i`, in spherical 
+        coordinates
+        
+        :math:`Y_{lm}\left(\theta_i, \phi_i \right)` is the spherical harmonic function
+        
+        :math:`w_i` is the weighting factor, either proportional to the area (for `weighted`)
+        or all equal (:math:`\frac{1}{N_b}`)
+        
+        For ``local=True``, this calculates
+        
+        .. math:: 
+            Q_{l,\mathrm{local}} = \sum_{j=1}^N \sqrt{\frac{4 \pi}{2 l + 1}\sum_{m=-l}^{l} \left| 
+                    \sum_{i=1}^{n_b^j} w_i Y_{lm}\left(\theta_i, \phi_i \right) \right|^2}
+                    
+        where variables are as above, and each *cell* is weighted equally but each *bond* for each 
+        cell is weighted: :math:`\sum_{i=1}^{n_b^j} w_i = 1`
+        
         """
         import numpy as np
         

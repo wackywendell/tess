@@ -57,9 +57,9 @@ cdef extern from "voro++.hh" namespace "voro":
         
 
 cdef class Cell:
-    """A basic voronoi cell, usually created by ``Container``.
+    """A basic voronoi cell, usually created by :class:`Container`.
     
-    The various methods of a ``Cell`` allow access to the geometry and neighbor information."""
+    The various methods of a `Cell` allow access to the geometry and neighbor information."""
     cdef voronoicell_neighbor *thisptr
     cdef int _id
     cdef double x,y,z
