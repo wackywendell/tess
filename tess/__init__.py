@@ -1,12 +1,33 @@
 from ._voro import Container as _Container, ContainerPoly as _ContainerPoly, Cell
 
 class Container(list):
+    """A container of Voronoi cells. This is the main entry point into the ``tess`` module. After
+    creation, this will be a ``list`` of ``Cell`` objects.
+    
+    The ``Container`` must be rectilinear, and can have solid boundary conditions, periodic boundary
+    conditions, or a mix of the two. 
+    
+        :param arg1: description
+        :param arg2: description
+        :type arg1: type description
+        :type arg1: type description
+        :return: return description
+        :rtype: the return type description
+    
+    >>> c = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
+    >>> [round(v.volume(), 3) for v in c]
+    [13.5, 13.5]
+    
+    See ``__init__`` for information on how to create a ``Container``, and see ``Cell`` for more 
+    information.
+    """
+    
     def __init__(self, points, limits=1.0, periodic=False, radii=None, blocks=None):
         """Get the voronoi cells for a given set of points.
         
         points: an Nx3 iterable of floating point numbers denoting the coordinates.
-        limits: the size of the box. May be a number (for a cubic box), or a 3-tuple.
-        periodic: a bool or 3-tuple of bools representing wall periodicity
+        limits: the size of the box. May be a ``float`` (for a cubic box), or a 3-tuple.
+        periodic: a ``bool`` or 3-tuple of ``bool``s representing wall periodicity
         """
         # make px, py, pz from periodic, whether periodic is a 3-tuple or bool
         try:
@@ -82,6 +103,7 @@ class Container(list):
 You may want to check that all points are within the box, and none are overlapping. {} / {}".format(len(self), len(points)))
     
     def get_widths(self):
+        "Get the size of the box."
         return self._container.get_widths()
         
     def _get_bond_normals(self):
@@ -94,7 +116,7 @@ You may want to check that all points are within the box, and none are overlappi
         ]
 
     def order(self, l=6, local=False, weighted=True):
-        """Returns crystalline order parameter.
+        """Returns crystalline order parameter $Q_l$ (such as $Q_6$).
         
         Requires numpy and scipy.
         

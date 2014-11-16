@@ -33,3 +33,6 @@ MANIFEST
 /dist
 /build
 __pycache__
+/docs/.build
+/docs/.templates
+/docs/.static

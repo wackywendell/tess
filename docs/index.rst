@@ -4,17 +4,20 @@
    contain the root `toctree` directive.
 
 Welcome to tess's documentation!
-================================
+********************************
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
-
+    :maxdepth: 2
+   
+    readmewrapper
+    
+    api
 
 
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`
