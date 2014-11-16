@@ -57,6 +57,9 @@ cdef extern from "voro++.hh" namespace "voro":
         
 
 cdef class Cell:
+    """A basic voronoi cell, usually created by ``Container``.
+    
+    The various methods of a ``Cell`` allow access to the geometry and neighbor information."""
     cdef voronoicell_neighbor *thisptr
     cdef int _id
     cdef double x,y,z
@@ -70,18 +73,28 @@ cdef class Cell:
     
     @property
     def pos(self):
+        "The position of the initial point around which this cell was created."
         return (self.x, self.y, self.z)
     
     @property
     def radius(self):
+        """The radius of the particle around which this cell was created.
+        
+        Defaults to 0."""
         return self.r
     
     @property
     def id(self):
+        """The ``id`` of the cell, which should generally correspond to its index in the 
+        ``Container``."""
         return self._id
     
-    def volume(self): return self.thisptr.volume()
-    def max_radius_squared(self): return self.thisptr.max_radius_squared()
+    def volume(self):
+        "Cell volume"
+        return self.thisptr.volume()
+    def max_radius_squared(self):
+        """Maximum distance from ``pos()`` to outer edge of the cell (I think, see ``voro++`` documentation.)"""
+        return self.thisptr.max_radius_squared()
     def total_edge_distance(self): return self.thisptr.total_edge_distance()
     def surface_area(self): return self.thisptr.surface_area()
     def number_of_faces(self): return self.thisptr.number_of_faces()
