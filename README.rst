@@ -3,6 +3,12 @@ Tess, a 3D cell-based Voronoi library based on voro++
 
 .. image:: https://travis-ci.org/wackywendell/tess.svg?branch=master
     :target: https://travis-ci.org/wackywendell/tess
+    :alt: Build Status
+
+
+.. image:: https://readthedocs.org/projects/tess/badge/?version=latest
+    :target: https://readthedocs.org/projects/tess/?badge=latest
+    :alt: Documentation Status
 
 `Original work`_ on voro++ by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). 
 
@@ -37,21 +43,7 @@ library, but contains a number of useful functions.
 
 .. _This repository: https://github.com/wackywendell/tess
 
-Compilation
-~~~~~~~~~~~
-To make, run ``python setup.py build_ext`` in either the main directory or the ``src`` directory.
-
-To install, run ``python setup.py install --user`` to install to your home directory (recommended), or
-``sudo python setup.py install`` to install to the main setup directory.
-
-Use
-~~~
-After installation, use `import tess` to import the module.
-
-Examples of use are `available here`_,
-with the notebook being rendered from ``examples/Examples.ipynb``.
-
-.. _available here: http://nbviewer.ipython.org/github/wackywendell/tess/blob/master/examples/Examples.ipynb
+.. include:: ../QUICKSTART.rst
 
 Voro++ Copyright And Acknowledgments
 ------------------------------------

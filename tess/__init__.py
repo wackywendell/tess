@@ -1,3 +1,21 @@
+"""
+This is a library to calculate Voronoi cells and access their information.
+
+Basic process:
+~~~~~~~~~~~~~~
+
+  - Create a :class:`Container` object, using information about your system. 
+      - a  :class:`Container` is a `list` of :class:`Cell` objects
+  - Access the :class:`Cell` methods to get information about them
+
+An example:
+~~~~~~~~~~~
+
+    >>> c = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
+    >>> [round(v.volume(), 3) for v in c]
+    [13.5, 13.5]
+"""
+
 from ._voro import Container as _Container, ContainerPoly as _ContainerPoly, Cell
 
 class Container(list):
