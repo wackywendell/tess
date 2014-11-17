@@ -1,9 +1,9 @@
 Reference
 *********
 
-.. automodule:: tess
+.. autoclass:: tess.Cell
     :members:
     :undoc-members:
-.. autoclass:: tess.Cell
+.. automodule:: tess
     :members:
     :undoc-members:
