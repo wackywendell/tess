@@ -1,15 +1,15 @@
 """
 This is a library to calculate Voronoi cells and access their information.
 
-Basic process:
-~~~~~~~~~~~~~~
+Basic Process
+~~~~~~~~~~~~~
 
   - Create a :class:`Container` object, using information about your system. 
       - a  :class:`Container` is a `list` of :class:`Cell` objects
   - Access the :class:`Cell` methods to get information about them
 
-An example:
-~~~~~~~~~~~
+Example
+~~~~~~~
 
     >>> c = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
     >>> [round(v.volume(), 3) for v in c]
@@ -19,7 +19,7 @@ An example:
 from ._voro import Container as _Container, ContainerPoly as _ContainerPoly, Cell
 
 class Container(list):
-    """A container of Voronoi cells.
+    """A container (`list`) of Voronoi cells.
     
     This is the main entry point into the :mod:`tess` module. After creation, this will be a `list` 
     of :class:`Cell` objects.
@@ -204,8 +204,8 @@ def cart_to_spher(xyz):
     
     Returns an Nx2 matrix.
     
-    Column 0: the "elevation" angle, 0 to pi
-    Column 1: the "azimuthal angle, 0 to 2*pi
+    Column 0: the "elevation" angle, :math:`0` to :math:`\pi`
+    Column 1: the "azimuthal" angle, :math:`0` to :math:`2\pi`
     """
     import numpy as np
     ptsnew = np.zeros((xyz.shape[0],2))
@@ -215,12 +215,13 @@ def cart_to_spher(xyz):
     return ptsnew
 
 def orderQ(l, xyz, weights=1):
-    """Returns Ql, for a given l (int) and a set of Cartesian coordinates xyz.
+    """Returns :math:`Q_l`, for a given l (int) and a set of Cartesian coordinates xyz.
     
     Requires numpy and scipy.
     
-    For global Q6, use l=6, and pass xyz of all the bonds.
-    For local Q6, use l=6, and pass xyz of the bonds of each atom separately, and then average the results.
+    For global :math:`Q_6`, use :math:`l=6`, and pass xyz of all the bonds.
+    For local :math:`Q_6`, use :math:`l=6`, and pass xyz of the bonds of each atom separately, 
+    and then average the results.
     
     To weight by Voronoi neighbors, pass weights=(face areas).
     """
