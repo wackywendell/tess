@@ -27,7 +27,7 @@ Description
 -----------
 
 Tess is a library to calculate Voronoi (and Laguerre) tessellations in 3D and analyze their
-structure. The tessellation is calculated as a list of :class:`tess.Cell` objects, each of which
+structure. The tessellation is calculated as a list of :class:`~tess.Cell` objects, each of which
 can give information on its volume, centroid, number of faces, surface area, etc. The library is 
 made with packings of spherical particles in mind, possibly with variable sizes. 
 
@@ -63,16 +63,16 @@ Or to install from Github_::
 Usage
 ~~~~~
 
-The first step is to create a :class:`tess.Container`::
+The first step is to create a :class:`~tess.Container`::
 
     >>> cntr = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
 
-A container is a list of :class:`tess.Cell` objects, representing Voronoi ells:
+A container is a list of :class:`~tess.Cell` objects, representing Voronoi ells:
     
     >>> [round(v.volume(), 3) for v in cntr]
     [13.5, 13.5]
 
-:class:`tess.Cell` objects have many methods. Here are a few::
+:class:`~tess.Cell` objects have many methods. Here are a few::
 
     >>> [v.pos for v in cntr]
     [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]
