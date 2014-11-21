@@ -37,10 +37,15 @@ class Container(list):
         The coordinates of the points, size Nx3.
     limits : `float` or 3-tuple of float
         The box limits
-    periodic : `bool` or 3-tuple of `bool` (optional)
+    periodic : `bool` or 3-tuple of `bool`, optional
         Periodicity of the x, y, and z walls
-    radii: iterable of `float` (optional)
+    radii: iterable of `float`, optional
         for unequally sized particles, for generating a Laguerre transformation
+    
+    Returns
+    -------
+    Container
+        A `list` of :class:`Cell` objects
     """
     
     def __init__(self, points, limits=1.0, periodic=False, radii=None, blocks=None):
@@ -138,11 +143,11 @@ You may want to check that all points are within the box, and none are overlappi
         
         Parameters
         ----------
-        l : int
+        l : int, optional
             Defines which :math:`Q_l` you want (6 is standard, for detecting hexagonal lattices)
-        local : bool
+        local : bool, optional
             Calculate Local :math:`Q_6` (true) or Global :math:`Q_6`
-        weighted : bool
+        weighted : bool, optional
             Whether or not to weight by area the faces of each polygonal side
         
         Notes
@@ -175,6 +180,11 @@ You may want to check that all points are within the box, and none are overlappi
         where variables are as above, and each *cell* is weighted equally but each *bond* for each 
         cell is weighted: :math:`\sum_{i=1}^{n_b^j} w_i = 1`
         
+        Returns
+        -------
+        
+        float
+        
         """
         import numpy as np
         
@@ -198,14 +208,22 @@ You may want to check that all points are within the box, and none are overlappi
         return np.mean(Qs)
 
 def cart_to_spher(xyz):
-    """Takes Nx3 matrix of Cartesian coordinates, and converts them to (theta, phi).
+    """Converts 3D cartesian coordinates to the angular portion of spherical coordinates, (theta, phi).
     
     Requires numpy.
     
-    Returns an Nx2 matrix.
+    Parameters
+    ----------
     
-    Column 0: the "elevation" angle, :math:`0` to :math:`\pi`
-    Column 1: the "azimuthal" angle, :math:`0` to :math:`2\pi`
+    xyz: array-like, Nx3
+        
+        Column 0: the "elevation" angle, :math:`0` to :math:`\pi`
+        
+        Column 1: the "azimuthal" angle, :math:`0` to :math:`2\pi`
+    
+    Returns
+    -------
+    array, Nx2
     """
     import numpy as np
     ptsnew = np.zeros((xyz.shape[0],2))
@@ -215,15 +233,41 @@ def cart_to_spher(xyz):
     return ptsnew
 
 def orderQ(l, xyz, weights=1):
-    """Returns :math:`Q_l`, for a given l (int) and a set of Cartesian coordinates xyz.
+    r"""Returns :math:`Q_l`, for a given l (int) and a set of Cartesian coordinates xyz.
     
     Requires numpy and scipy.
     
     For global :math:`Q_6`, use :math:`l=6`, and pass xyz of all the bonds.
-    For local :math:`Q_6`, use :math:`l=6`, and pass xyz of the bonds of each atom separately, 
-    and then average the results.
     
-    To weight by Voronoi neighbors, pass weights=(face areas).
+    For local :math:`Q_6`, use :math:`l=6`, and the bonds have to be averaged slightly differently.
+    
+    Parameters
+    ----------
+    l : int
+        The order of :math:`Q_l`
+    xyz : array-like Nx3
+        The bond vectors :math:`\vec r_j - \vec r_i`
+    weights : array-like, optional
+        How to weight the bonds; weighting by Voronoi face area is common.
+    
+    Notes
+    -----
+    This calculates
+    
+    .. math:: 
+        Q_l = \sqrt{\frac{4 \pi}{2 l + 1}\sum_{m=-l}^{l} \left| 
+                \sum_{i=1}^{N_b} w_i Y_{lm}\left(\theta_i, \phi_i \right) \right|^2}
+    
+    where:
+    
+    :math:`N_b` is the number of bonds
+    
+    :math:`\theta_i` and :math:`\phi_i` are the angles of each bond :math:`i`, in spherical 
+    coordinates
+    
+    :math:`Y_{lm}\left(\theta_i, \phi_i \right)` is the spherical harmonic function
+    
+    :math:`w_i` are the `weights`, defaulting to uniform: (:math:`\frac{1}{N_b}`)
     """
     import numpy as np
     from scipy.special import sph_harm

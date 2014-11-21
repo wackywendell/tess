@@ -59,6 +59,8 @@ cdef extern from "voro++.hh" namespace "voro":
 cdef class Cell:
     """A basic voronoi cell, usually created by :class:`Container`.
     
+    A Voronoi cell has polygonal `faces`, connected by `edges` and `vertices`.
+    
     The various methods of a `Cell` allow access to the geometry and neighbor information."""
     cdef voronoicell_neighbor *thisptr
     cdef int _id
@@ -95,10 +97,14 @@ cdef class Cell:
     def max_radius_squared(self):
         """Maximum distance from ``pos()`` to outer edge of the cell (I think, see ``voro++`` documentation.)"""
         return self.thisptr.max_radius_squared()
-    def total_edge_distance(self): return self.thisptr.total_edge_distance()
-    def surface_area(self): return self.thisptr.surface_area()
-    def number_of_faces(self): return self.thisptr.number_of_faces()
-    def number_of_edges(self): return self.thisptr.number_of_edges()
+    def total_edge_distance(self):
+        return self.thisptr.total_edge_distance()
+    def surface_area(self):
+        return self.thisptr.surface_area()
+    def number_of_faces(self):
+        return self.thisptr.number_of_faces()
+    def number_of_edges(self):
+        return self.thisptr.number_of_edges()
     
     def centroid(self):
             cdef double cx = 0
@@ -114,11 +120,21 @@ cdef class Cell:
         return v
     
     def vertices(self):
+        """A list of all the locations of the vertices of each face.
+        
+        Returns
+        -------
+        A list of 3-tuples of floats. Each tuple corresponds to a single vertex."""
         cdef vector[double] v
         self.thisptr.vertices(self.x, self.y, self.z, v)
-        return v
+        return list(zip(v[::3], v[1::3], v[2::3]))
     
     def face_areas(self):
+        """A list of the areas of each face.
+        
+        Returns
+        -------
+        A list of floats. Each inner list corresponds to a face."""
         cdef vector[double] v
         self.thisptr.face_areas(v)
         return v
@@ -129,6 +145,14 @@ cdef class Cell:
         return v
     
     def face_vertices(self):
+        """A list of the indices of the vertices of each face.
+        
+        Returns
+        -------
+        A list of lists of ints. Each inner list corresponds to a face, and each index corresponds
+        to a vertex from :meth:`vertices`.
+        """
+        
         cdef vector[int] v
         self.thisptr.face_vertices(v)
         
@@ -150,6 +174,11 @@ cdef class Cell:
         return v
     
     def normals(self):
+        r"""A list of the areas of each face.
+        
+        Returns
+        -------
+        A list of 3-tuples of floats. Each tuple corresponds to a face."""
         cdef vector[double] v
         self.thisptr.normals(v)
         return list(zip(v[::3], v[1::3], v[2::3]))
