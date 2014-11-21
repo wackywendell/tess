@@ -1,17 +1,12 @@
-Introduction and Quickstart
-***************************
-
-.. include:: ../QUICKSTART.rst
+.. include:: ../README.rst
 
 Full Contents
--------------
+*************
 
 .. toctree::
     :maxdepth: 3
    
     self
-    
-    readmewrapper
     
     api
 

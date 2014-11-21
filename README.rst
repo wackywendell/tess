@@ -1,5 +1,8 @@
-Tess, a 3D cell-based Voronoi library based on voro++
-=====================================================
+Tess
+****
+
+A 3D cell-based Voronoi library based on voro++
+-----------------------------------------------
 
 .. image:: https://travis-ci.org/wackywendell/tess.svg?branch=master
     :target: https://travis-ci.org/wackywendell/tess
@@ -10,40 +13,101 @@ Tess, a 3D cell-based Voronoi library based on voro++
     :target: https://readthedocs.org/projects/tess/?badge=latest
     :alt: Documentation Status
 
+This library includes Python bindings, using Cython.
+
+`Code available`_ on Github.
+
+`Documentation available`_ at Read the Docs. 
+
+.. _Code available: https://github.com/wackywendell/tess
+
+.. _Documentation available: https://tess.readthedocs.org
+
+Description
+-----------
+
+Tess is a library to calculate Voronoi (and Laguerre) tessellations in 3D and analyze their
+structure. The tessellation is calculated as a list of :class:`tess.Cell` objects, each of which
+can give information on its volume, centroid, number of faces, surface area, etc. The library is 
+made with packings of spherical particles in mind, possibly with variable sizes. 
+
+voro++
+~~~~~~
+
+The Tess library is a set of Python bindings to the Voro++ library. Voro++ provides all the 
+algorithms, and Tess provides an easy to use interface to the voro++ library for Python, using
+Cython to do so. 
+
 `Original work`_ on voro++ by Chris H. Rycroft (UC Berkeley / Lawrence Berkeley Laboratory). 
-
-**This repository includes Python bindings, using Cython.**
-
-Introduction
-------------
-
-Voro++ is a software library for carrying out three-dimensional computations
-of the Voronoi tessellation. A distinguishing feature of the Voro++ library
-is that it carries out cell-based calculations, computing the Voronoi cell
-for each particle individually, rather than computing the Voronoi
-tessellation as a global network of vertices and edges. It is particularly
-well-suited for applications that rely on cell-based statistics, where
-features of Voronoi cells (eg. volume, centroid, number of faces) can be
-used to analyze a system of particles.
-
-Voro++ comprises of several C++ classes that can be built as a static library
-and linked to. A command-line utility is also provided that can analyze text
-files of particle configurations and use most of the features of the code.
-Numerous examples are provided to demonstrate the library's features and all of
-these are discussed in detail on the library website.
 
 .. _Original work: http://math.lbl.gov/voro++/
 
-What is tess?
-~~~~~~~~~~~~~
 
-`This repository`_ is a python wrapper 
-around the voro++ library. It is currently not as powerful as the full C++
-library, but contains a number of useful functions.
 
-.. _This repository: https://github.com/wackywendell/tess
+Quick Start
+-----------
 
-.. include:: ../QUICKSTART.rst
+Installation
+~~~~~~~~~~~~
+
+To install, use ``pip`` (or ``easy_install``)::
+
+    pip install --user tess
+
+Or to install from Github_::
+    
+    pip install --user git+git://github.com/wackywendell/tess@master
+    
+.. _github: https://www.github.com/wackywendell/tess
+
+Usage
+~~~~~
+
+The first step is to create a :class:`tess.Container`::
+
+    >>> cntr = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
+
+A container is a list of :class:`tess.Cell` objects, representing Voronoi ells:
+    
+    >>> [round(v.volume(), 3) for v in cntr]
+    [13.5, 13.5]
+
+:class:`tess.Cell` objects have many methods. Here are a few::
+
+    >>> [v.pos for v in cntr]
+    [(1.0, 1.0, 1.0), (2.0, 2.0, 2.0)]
+    
+    >>> [v.centroid() for v in cntr]
+    [(1.09375, 1.09375, 1.09375), (1.90625, 1.90625, 1.90625)]
+    
+    >>> [v.neighbors() for v in cntr]
+    [[-5, -2, -3, -1, -4, 1, -6], [0, -3, -6, -4, -5, -2, -1]]
+    
+    >>> [v.face_areas() for v in cntr]
+    [[7.875, 1.125, 7.875, 7.875, 1.125, 11.691342951089922, 1.125],
+     [11.691342951089922, 1.125, 7.875, 7.875, 1.125, 7.875, 1.125]]
+    
+    >>> [v.normals() for v in cntr]
+    [[(0.0, 0.0, -1.0),
+      (1.0, 0.0, 0.0),
+      (0.0, -1.0, 0.0),
+      (-1.0, 0.0, 0.0),
+      (0.0, 1.0, 0.0),
+      (0.5773502691896257, 0.5773502691896257, 0.5773502691896257),
+      (0.0, 0.0, 1.0)],
+     [(-0.5773502691896257, -0.5773502691896257, -0.5773502691896257),
+      (-0.0, -1.0, -0.0),
+      (0.0, 0.0, 1.0),
+      (0.0, 1.0, -0.0),
+      (0.0, 0.0, -1.0),
+      (1.0, 0.0, -0.0),
+      (-1.0, -0.0, -0.0)]]
+      
+See the Reference_ for more methods, or just use a Python interpreter or IPython notebook to find
+them on your own!
+
+.. _Reference: api.html
+
 
 Voro++ Copyright And Acknowledgments
 ------------------------------------
@@ -71,8 +135,8 @@ works, distribute copies to the public, perform publicly and display publicly,
 and to permit others to do so.
 
 
-Voro++ Acknowledgments
-~~~~~~~~~~~~~~~~~~~~~~
+Acknowledgments
+~~~~~~~~~~~~~~~
 This work (voro++) was supported by the Director, Office of Science, Computational and
 Technology Research, U.S. Department of Energy under Contract No.
 DE-AC02-05CH11231.

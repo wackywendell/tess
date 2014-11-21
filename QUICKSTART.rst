@@ -1,6 +1,3 @@
-Quick Start
------------
-
 Installation
 ~~~~~~~~~~~~
 
@@ -17,7 +14,7 @@ Or to install from Github_::
 Usage
 ~~~~~
 
-The first step is to create a :class:`tess.Cell`::
+The first step is to create a :class:`tess.Container`::
 
     >>> cntr = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
 
