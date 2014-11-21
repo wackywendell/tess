@@ -1,3 +1,28 @@
+"""
+Tess
+****
+
+A 3D cell-based Voronoi library based on voro++
+-----------------------------------------------
+
+`Code available`_ on Github.
+
+`Full documentation available`_ at Read the Docs. 
+
+.. _Code available: https://github.com/wackywendell/tess
+
+.. _Full documentation available: https://tess.readthedocs.org
+
+Description
+-----------
+
+Tess is a library to calculate Voronoi (and Laguerre) tessellations in 3D and analyze their
+structure. The tessellation is calculated as a `list` of `Cell` objects, each of which
+can give information on its volume, centroid, number of faces, surface area, etc. The library is 
+made with packings of spherical particles in mind, possibly with variable sizes. 
+
+"""
+
 from distutils.core import setup
 from distutils.extension import Extension
 from distutils.command.sdist import sdist as _sdist
@@ -8,14 +33,7 @@ try:
 except ImportError:
     cythonize = None
 
-extension_version = '0.1.2'
-
-# Utility function to read the README file.
-# Used for the long_description.  It's nice, because now 1) we have a top level
-# README file and 2) it's easier to type in the README file than to put a raw
-# string in below ...
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+extension_version = '0.1.4'
 
 if cythonize is not None:
     print("Building with Cython.")
@@ -53,8 +71,8 @@ setup( name='tess',
         description = ("A module for calculating and analyzing Voronoi tessellations"),
         license = "BSD",
         keywords = "laguerre voronoi tessellation voro++",
-        url = "https://github.com/wackywendell/tess",
-        long_description=read('README.rst'),
+        url = "https://tess.readthedocs.org",
+        long_description=__doc__.strip(),
         classifiers=[
             "Development Status :: 3 - Alpha",
             "Topic :: Scientific/Engineering :: Mathematics",
