@@ -115,11 +115,27 @@ class FCC(LatticeTest, TestCase):
         return np.concatenate(xs)
     
     def setUp(self):
+        # also use non-origin limits
         self.cells = Container(self.points(), limits=self.limits, periodic=True)
     
     def test_volumes(self): self.volumes([0.25])
     
     def test_neighbors(self): self.neighbors([12])
+
+class FCCnegative(FCC):
+    def setUp(self):
+        # also use non-origin limits
+        self.cells = Container(self.points(), limits=(-self.limits/2., self.limits/2.), periodic=True)
+
+class FCCmoved(FCC):
+    def setUp(self):
+        # also use non-origin limits
+        self.cells = Container(self.points(), limits=(self.limits/2., self.limits*3./2.), periodic=True)
+
+class FCCsinglelimit(FCC):
+    def setUp(self):
+        # also use non-origin limits
+        self.cells = Container(self.points(), limits=self.n, periodic=True)
 
 class HCP(FCC):
     order = 0.48476168522368324
