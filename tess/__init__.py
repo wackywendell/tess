@@ -35,9 +35,11 @@ class Container(list):
     ----------
     points : iterable of iterable of `float`
         The coordinates of the points, size Nx3.
-    limits : `float` or 3-tuple of float
-        The box limits. Limits are [0, 0, 0] to [Lx, Ly, Lz] if given a 3-tuple `(Lx, Ly, Lz)`. If 
-        given a float `L`, then the box limits are [0, 0, 0] to [L, L, L].
+    limits : `float`, 3-tuple of float, or two 3-tuples of float
+        The box limits. 
+        If given a float `L`, then the box limits are [0, 0, 0] to [L, L, L].
+        If given a 3-tuple `(Lx, Ly, Lz)`, limits are [0, 0, 0] to [Lx, Ly, Lz].
+        If given two 3-tuples `(x0, y0, z0), (x1, y1, z1)`, limits are [x0, y0, z0] to [x1, y1, z1].
     periodic : `bool` or 3-tuple of `bool`, optional
         Periodicity of the x, y, and z walls
     radii: iterable of `float`, optional
@@ -61,23 +63,37 @@ class Container(list):
         pz = bool(periodic)
         
         # make lx, ly, lz from limits, whether limits is a 3-tuple or float
+        # lx0, ly0, lz0 are the lower limits, lx, ly, lz are the upper limits
+        # If `periodic`, then only the relative difference matters
         try:
+            l0, far_limits = limits
+            lx0, ly0, lz0 = l0
+            lx, ly, lz = far_limits
+        except ValueError:
+            lx0 = ly0 = lz0 = 0.0
             lx, ly, lz = limits
         except TypeError:
+            lx0 = ly0 = lz0 = 0.0
             lx = ly = lz = limits
+        lx0 = float(lx0)
+        ly0 = float(ly0)
+        ly0 = float(lz0)
         lx = float(lx)
         ly = float(ly)
         lz = float(lz)
-        assert lx > 0
-        assert ly > 0
-        assert lz > 0
+        assert lx > lx0
+        assert ly > ly0
+        assert lz > lz0
+        
+        # The actual lengths on each side
+        Lx, Ly, Lz = lx - lx0, ly - ly0, lz - lz0
         
         N = len(points)
         
         # make bx, by, bz from blocks, or make it up
         if blocks is None:
             Nthird = pow(N, 1.0/3.0)
-            blocks = round(Nthird / lx), round(Nthird / ly), round(Nthird / lz)
+            blocks = round(Nthird / Lx), round(Nthird / Ly), round(Nthird / Lz)
         
         try:
             bx, by, bz = blocks
@@ -100,7 +116,7 @@ class Container(list):
         # Now we choose the right one.
         if radii is not None:
             assert(len(radii) == len(points))
-            self._container = _ContainerPoly(0,lx, 0,ly, 0,lz, # limits
+            self._container = _ContainerPoly(lx0,lx, ly0,ly, lz0,lz, # limits
                                 bx, by, bz,        # block size
                                 px, py, pz,        # periodicity
                                 len(points))
@@ -109,12 +125,12 @@ class Container(list):
                 self._container.put(n, roundedoff(x,lx,px), roundedoff(y,ly,py), roundedoff(z,lz,pz), float(r))
         else:
             # no radii => use voro._Container
-            self._container = _Container(0,lx, 0,ly, 0,lz,         # limits
+            self._container = _Container(lx0,lx, ly0,ly, lz0,lz,         # limits
                                     bx, by, bz,        # block size
                                     px, py, pz,        # periodicity
                                     len(points))
             for n,(x,y,z) in enumerate(points):
-                self._container.put(n, roundedoff(x,lx,px), roundedoff(y,ly,py), roundedoff(z,lz,pz))
+                self._container.put(n, roundedoff(x,Lx,px), roundedoff(y,Ly,py), roundedoff(z,Lz,pz))
             
         cells = self._container.get_cells()
         list.__init__(self, cells)
