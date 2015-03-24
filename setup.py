@@ -33,7 +33,7 @@ try:
 except ImportError:
     cythonize = None
 
-extension_version = '0.1.4'
+extension_version = '0.2'
 
 if cythonize is not None:
     print("Building with Cython.")
