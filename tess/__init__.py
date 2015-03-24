@@ -36,7 +36,8 @@ class Container(list):
     points : iterable of iterable of `float`
         The coordinates of the points, size Nx3.
     limits : `float` or 3-tuple of float
-        The box limits
+        The box limits. Limits are [0, 0, 0] to [Lx, Ly, Lz] if given a 3-tuple `(Lx, Ly, Lz)`. If 
+        given a float `L`, then the box limits are [0, 0, 0] to [L, L, L].
     periodic : `bool` or 3-tuple of `bool`, optional
         Periodicity of the x, y, and z walls
     radii: iterable of `float`, optional
