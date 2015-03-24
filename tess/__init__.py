@@ -92,16 +92,18 @@ class Container(list):
         
         # make bx, by, bz from blocks, or make it up
         if blocks is None:
-            Nthird = pow(N, 1.0/3.0)
-            blocks = round(Nthird / Lx), round(Nthird / Ly), round(Nthird / Lz)
+            V = Lx * Ly * Lz
+            Nthird = pow(N/V, 1.0/3.0)
+            blocks = round(Nthird * Lx), round(Nthird * Ly), round(Nthird * Lz)
         
         try:
             bx, by, bz = blocks
         except TypeError:
-            bx = by = bz
+            bx = by = bz = blocks
         bx = max(int(bx), 1)
         by = max(int(by), 1)
         bz = max(int(bz), 1)
+        self.blocks = bx, by, bz
         
         # If we have periodic conditions, we want to get the 'boxed' version of each position.
         # Each coordinate (x,y,z) may or may not be periodic, so we'll deal with them separately.
@@ -131,7 +133,7 @@ class Container(list):
                                     len(points))
             for n,(x,y,z) in enumerate(points):
                 self._container.put(n, roundedoff(x,Lx,px), roundedoff(y,Ly,py), roundedoff(z,Lz,pz))
-            
+        
         cells = self._container.get_cells()
         list.__init__(self, cells)
         

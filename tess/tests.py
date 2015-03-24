@@ -99,6 +99,22 @@ class CubicAlternating(CubicLattice, TestCase):
         for c,r in zip(self.cells, self.r):
             self.assertAlmostEqual(c.radius, r)
 
+class CubicBlocks(CubicLattice, TestCase):
+    def setUp(self):
+        self.pts, self.r = self.get_points(r2=0.5)
+        self.cells = Container(self.pts, self.n, periodic=False, blocks=2)
+    
+    def test_blocks(self):
+        self.assertEqual(self.cells.blocks, (2,2,2))
+
+class CubicBlocksUnequal(CubicLattice, TestCase):
+    def setUp(self):
+        self.pts, self.r = self.get_points(r2=0.5)
+        self.cells = Container(self.pts, self.n, periodic=False, blocks=(0,1.1,2))
+
+    def test_blocks(self):
+        self.assertEqual(self.cells.blocks, (1,1,2))
+
 class FCC(LatticeTest, TestCase):
     order = 0.57452425971404164
     n = 4
@@ -110,7 +126,8 @@ class FCC(LatticeTest, TestCase):
         x2 = np.array((0.5,0,0.5))
         x3 = np.array((0.5,0.5,0))
         
-        dxs = np.array([(i,j,k) for k in range(self.n) for j in range(self.n) for i in range(self.n)])
+        n1, n2, n3 = self.limits
+        dxs = np.array([(i,j,k) for k in range(n3) for j in range(n2) for i in range(n1)])
         xs = np.array([[x+dx for x in (x0, x1, x2, x3)] for dx in dxs])
         return np.concatenate(xs)
     
@@ -121,6 +138,13 @@ class FCC(LatticeTest, TestCase):
     def test_volumes(self): self.volumes([0.25])
     
     def test_neighbors(self): self.neighbors([12])
+
+class FCCelongated(FCC):
+    n = 4
+    limits = np.array((n,n,2*n))
+    
+    def test_blocks(self):
+        self.assertEqual(tuple(self.cells.blocks), (6, 6, 13))
 
 class FCCnegative(FCC):
     def setUp(self):
