@@ -23,7 +23,7 @@ made with packings of spherical particles in mind, possibly with variable sizes.
 
 """
 
-from distutils.core import setup
+from setuptools import setup
 from distutils.extension import Extension
 from distutils.command.sdist import sdist as _sdist
 import os.path
