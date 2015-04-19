@@ -10,6 +10,8 @@
 #ifndef VOROPP_CONFIG_HH
 #define VOROPP_CONFIG_HH
 
+#include <limits>
+
 namespace voro {
 
 // These constants set the initial memory allocation for the Voronoi cell
@@ -23,12 +25,12 @@ const int init_3_vertices=256;
 /** The initial memory allocation for the number of vertices of higher order.
  */
 const int init_n_vertices=8;
-/** The initial buffer size for marginal cases used by the suretest class. */
-const int init_marginal=64;
 /** The initial size for the delete stack. */
 const int init_delete_size=256;
 /** The initial size for the auxiliary delete stack. */
 const int init_delete2_size=256;
+/** The initial size for the extra search stack. */
+const int init_xsearch_size=32;
 /** The initial size for the wall pointer array. */
 const int init_wall_size=32;
 /** The default initial size for the ordering class. */
@@ -44,12 +46,12 @@ const int max_vertices=16777216;
 const int max_vertex_order=2048;
 /** The maximum memory allocation for the any particular order of vertex. */
 const int max_n_vertices=16777216;
-/** The maximum buffer size for marginal cases used by the suretest class. */
-const int max_marginal=16777216;
 /** The maximum size for the delete stack. */
 const int max_delete_size=16777216;
 /** The maximum size for the auxiliary delete stack. */
 const int max_delete2_size=16777216;
+/** The maximum size for the extra search stack. */
+const int max_xsearch_size=16777216;
 /** The maximum amount of particle memory allocated for a single region. */
 const int max_particle_memory=16777216;
 /** The maximum size for the wall pointer array. */
@@ -75,20 +77,14 @@ const int pre_container_chunk_size=1024;
 
 /** If a point is within this distance of a cutting plane, then the code
  * assumes that point exactly lies on the plane. */
-const double tolerance=1e-11;
+const double tolerance=100.*std::numeric_limits<double>::epsilon();
 
-/** If a point is within this distance of a cutting plane, then the code stores
- * whether this point is inside, outside, or exactly on the cutting plane in
- * the marginal cases buffer, to prevent the test giving a different result on
- * a subsequent evaluation due to floating point rounding errors. */
-const double tolerance2=2e-11;
+const double big_tolerance_fac=20.;
 
-/** The square of the tolerance, used when deciding whether some squared
- * quantities are large enough to be used. */
-const double tolerance_sq=tolerance*tolerance;
+const double default_length=1000.;
 
 /** A large number that is used in the computation. */
-const double large_number=1e30;
+const double large_number=std::numeric_limits<double>::max();
 
 /** A radius to use as a placeholder when no other information is available. */
 const double default_radius=0.5;
