@@ -184,6 +184,13 @@ cdef class Cell:
         return list(zip(v[::3], v[1::3], v[2::3]))
     
     def neighbors(self):
+        r"""
+        Return a list of the *neighbors* of the current `Cell`.
+        
+        This is a list of indices, which correspond to the input points. The exception to this
+        is the walls: walls are numbered -1 to -6, so an index less than 0 in the list of 
+        `neighbors()` indicates that a `Cell` is neighbors with a wall.
+        """
         cdef vector[int] v
         self.thisptr.neighbors(v)
         return v
