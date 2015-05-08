@@ -11,8 +11,9 @@ before_install:
   - easy_install Cython
 
 install: 
+  - (cd docs && pip install -r requirements.txt)
   - python setup.py build_ext -i
 
 script:
   - nosetests --with-doctest tess
-  - cd docs && make doctests
+  - (cd docs && make doctests)
