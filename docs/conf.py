@@ -41,10 +41,19 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.doctest',
-    'numpydoc',
-]
+    'sphinxcontrib.napoleon']
 
-numpydoc_show_class_members = False
+# Napoleon settings
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = False
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -121,8 +130,9 @@ if not read_the_docs_build:
         html_theme = "sphinx_rtd_theme"
         html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
     except ImportError:
-        html_theme = 'agogo'
-        html_theme_options = {'headerbg': '#27ae60'}
+        #html_theme = 'agogo'
+        #html_theme_options = {'headerbg': '#27ae60'}
+        pass
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
