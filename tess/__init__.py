@@ -11,6 +11,7 @@ Basic Process
 Example
 ~~~~~~~
 
+    >>> from tess import Container
     >>> c = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
     >>> [round(v.volume(), 3) for v in c]
     [13.5, 13.5]
@@ -28,6 +29,7 @@ class Container(list):
     The :class:`Container` must be rectilinear, and can have solid boundary conditions, periodic 
     boundary conditions, or a mix of the two.
     
+    >>> from tess import Container
     >>> c = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
     >>> [round(v.volume(), 3) for v in c]
     [13.5, 13.5]
