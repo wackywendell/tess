@@ -18,8 +18,9 @@ Example
 
 from ._voro import Container as _Container, ContainerPoly as _ContainerPoly, Cell
 
+
 class Container(list):
-    """A container (`list`) of Voronoi cells.
+    r"""A container (`list`) of Voronoi cells.
     
     This is the main entry point into the :mod:`tess` module. After creation, this will be a `list` 
     of :class:`Cell` objects.
@@ -42,13 +43,32 @@ class Container(list):
         If given two 3-tuples `(x0, y0, z0), (x1, y1, z1)`, limits are [x0, y0, z0] to [x1, y1, z1].
     periodic : `bool` or 3-tuple of `bool`, optional
         Periodicity of the x, y, and z walls
-    radii: iterable of `float`, optional
-        for unequally sized particles, for generating a Laguerre transformation
+    radii : iterable of `float`, optional
+        for unequally sized particles, for generating a Laguerre transformation.
     
     Returns
     -------
     Container
         A `list` of :class:`Cell` objects
+    
+    Notes
+    -----
+    *Voronoi Tesselation*
+    
+    A point :math:`\vec x` is part of a Voronoi cell :math:`i` with nucleus :math:`\vec{r}_i` iff
+    
+    .. math:: 
+        \left|\vec{x}-\vec{r}_{i}\right|^{2}<\left|\vec{x}-\vec{r}_{j}\right|^{2} \forall j\neq i
+    
+    
+    *Laguerre Tesselation*, also known as *Radical Voronoi Tesselation*
+    
+    A point :math:`\vec x` is part of a Laguerre cell :math:`i` with nucleus :math:`\vec{r}_i` and
+    radius :math:`R_i` iff
+    
+    .. math::
+        \left|\vec{x}-\vec{r}_{i}\right|^{2}-R_{i}^{2}<\left|\vec{x}-\vec{r}_{j}\right|^{2} -
+        R_{j}^{2}\forall j\neq i
     """
     
     def __init__(self, points, limits=1.0, periodic=False, radii=None, blocks=None):
@@ -250,6 +270,7 @@ def cart_to_spher(xyz):
     ptsnew[:,0] = np.arctan2(np.sqrt(xy), xyz[:,2]) # for elevation angle defined from Z-axis down
     ptsnew[:,1] = np.arctan2(xyz[:,1], xyz[:,0])
     return ptsnew
+
 
 def orderQ(l, xyz, weights=1):
     r"""Returns :math:`Q_l`, for a given l (int) and a set of Cartesian coordinates xyz.
