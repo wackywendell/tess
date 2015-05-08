@@ -64,10 +64,16 @@ Usage
 ~~~~~
 
 The first step is to create a :class:`~tess.Container`::
-
+    
+    >>> from tess import Container
     >>> cntr = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
 
-A container is a list of :class:`~tess.Cell` objects, representing Voronoi ells:
+A container is a list of :class:`~tess.Cell` objects, representing Voronoi cells:
+    
+    .. testsetup:: *
+        
+        from tess import Container
+        cntr = Container([[1,1,1], [2,2,2]], limits=(3,3,3), periodic=False)
     
     >>> [round(v.volume(), 3) for v in cntr]
     [13.5, 13.5]
