@@ -16,4 +16,4 @@ install:
 
 script:
   - nosetests --with-doctest tess
-  - (cd docs && make doctests)
+  - (cd docs && make doctest)
