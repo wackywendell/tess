@@ -332,25 +332,18 @@ cdef class ContainerPeriodic:
         cdef container_periodic_base *baseptr = (<container_periodic_base *>(self.thisptr))
         cdef c_loop_all_periodic *vl = new c_loop_all_periodic(dereference(baseptr))
 
-        cdef int id
-
-        mylist = []
-
-        if not vl.start():
-            del vl
-            raise ValueError("Failed to start loop")
-
+        cells = []
         cell = Cell()
         while True:
             if(self.thisptr.compute_cell(dereference(cell.thisptr), dereference(vl))):
                 cell._id = vl.pid()
                 vl.pos(cell.x,cell.y,cell.z)
                 cell.r = 0
-                mylist.append(cell)
+                cells.append(cell)
                 cell = Cell()
             if not vl.inc(): break
         del vl
-        return mylist
+        return cells
 
 cdef class ContainerPeriodicPoly:
     cdef container_periodic_poly *thisptr
@@ -367,20 +360,17 @@ cdef class ContainerPeriodicPoly:
         cdef container_periodic_base *baseptr = (<container_periodic_base *>(self.thisptr))
         cdef c_loop_all_periodic *vl = new c_loop_all_periodic(dereference(baseptr))
 
-        cdef int id
-
-        mylist = []
-
         if not vl.start():
             del vl
             raise ValueError("Failed to start loop")
 
+        cells = []
         cell = Cell()
         while True:
             if(self.thisptr.compute_cell(dereference(cell.thisptr), dereference(vl))):
-                vl.pos(cell._id, cell.x,cell.y,cell.z,cell.r)
-                mylist.append(cell)
+                vl.pos(cell._id, cell.x, cell.y, cell.z, cell.r)
+                cells.append(cell)
                 cell = Cell()
             if not vl.inc(): break
         del vl
-        return mylist
+        return cells
