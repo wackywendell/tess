@@ -33,15 +33,15 @@ try:
 except ImportError:
     cythonize = None
 
-extension_version = '0.2'
+extension_version = '0.2.1'
 
 if cythonize is not None:
     print("Building with Cython.")
-    ext = cythonize(Extension("tess._voro",
+    ext = cythonize([Extension("tess._voro",
               sources=["tess/_voro.pyx", "src/voro++.cc"],
               include_dirs=["src"],
               language="c++",
-              ))
+              )])
 else:
     print("Cython not found, using prebuilt file.")
     ext = [Extension("tess._voro",
