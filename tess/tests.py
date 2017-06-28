@@ -14,24 +14,24 @@ class LatticeTest:
     as well as the setUp() function."""
     limits = None
     order = None
-    
+
     def setUp(self):
         self.cells = None
-    
+
     def volumes(self, vs):
         found_vs = sorted(set([round(c.volume(), 8) for c in self.cells]))
         self.assertEqual(len(vs), len(found_vs), found_vs)
-        
+
         for v, fv in zip(sorted(vs), found_vs):
             self.assertAlmostEqual(v, fv)
-    
+
     def neighbors(self, ns):
         found_ns = sorted(set([len(c.neighbors()) for c in self.cells]))
         self.assertEqual(len(ns), len(found_ns))
-        
+
         for n, fn in zip(sorted(ns), found_ns):
             self.assertEqual(n, fn)
-    
+
     def test_order(self):
         if scipy is None: return
         if self.order is None: return
@@ -39,24 +39,24 @@ class LatticeTest:
         self.assertAlmostEqual(self.order, self.cells.order(l=6, weighted=True, local=False))
         self.assertAlmostEqual(self.order, self.cells.order(l=6, weighted=False, local=True))
         self.assertAlmostEqual(self.order, self.cells.order(l=6, weighted=False, local=False))
-    
+
 class CubicLattice(LatticeTest):
     n = 4
     limits = (n,n,n)
-    
+
     def get_points(self, r2 = 0.6):
         nm = self.n
         ptsr = [tuple(np.array((l,m,n))+.5) + ((l+m+n) % 2,)
-               for l in range(nm) for m in range(nm) for n in range(nm)]
+                for l in range(nm) for m in range(nm) for n in range(nm)]
         ptsr = np.array(ptsr)
         pts = ptsr[:, :3]
         r = [.5 if r < 1 else r2 for r in ptsr[:, 3]]
         return pts, r
-        
+
     def setUp(self):
         self.pts, self.r = self.get_points(r2=0.5)
         self.cells = Container(self.pts, self.n, periodic=False)
-    
+
     def test_str(self):
         self.assertEqual(str(self.cells[0]), '<Cell 0>')
         self.assertEqual(repr(self.cells[0]), '<Cell 0>')
@@ -64,6 +64,7 @@ class CubicLattice(LatticeTest):
         self.assertEqual(repr(self.cells[1]), '<Cell 1>')
         self.assertEqual(str(self.cells[-1]), '<Cell {0}>'.format(len(self.cells)-1))
         self.assertEqual(repr(self.cells[-1]), '<Cell {0}>'.format(len(self.cells)-1))
+
 
 class BasicCubic(CubicLattice, TestCase):
     order = 0.35355339059328
