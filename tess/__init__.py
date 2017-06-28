@@ -80,9 +80,9 @@ class Container(list):
             px, py, pz = periodic
         except TypeError:
             px = py = pz = periodic
-        px = bool(periodic)
-        py = bool(periodic)
-        pz = bool(periodic)
+        px = bool(px)
+        py = bool(py)
+        pz = bool(pz)
         
         # make lx, ly, lz from limits, whether limits is a 3-tuple or float
         # lx0, ly0, lz0 are the lower limits, lx, ly, lz are the upper limits
@@ -99,7 +99,7 @@ class Container(list):
             lx = ly = lz = limits
         lx0 = float(lx0)
         ly0 = float(ly0)
-        ly0 = float(lz0)
+        lz0 = float(lz0)
         lx = float(lx)
         ly = float(ly)
         lz = float(lz)
@@ -129,9 +129,10 @@ class Container(list):
         
         # If we have periodic conditions, we want to get the 'boxed' version of each position.
         # Each coordinate (x,y,z) may or may not be periodic, so we'll deal with them separately.
-        def roundedoff(n, l, periodic):
+        def roundedoff(n, lmin, l, periodic):
             if periodic:
-                return float(n) % l
+                v = (float(n)-lmin) % l + lmin
+                return v
             else:
                 return float(n)
         
@@ -144,9 +145,15 @@ class Container(list):
                                 bx, by, bz,        # block size
                                 px, py, pz,        # periodicity
                                 len(points))
-            
+
             for n,(x,y,z),r in zip(range(len(points)), points, radii):
-                self._container.put(n, roundedoff(x,lx,px), roundedoff(y,ly,py), roundedoff(z,lz,pz), float(r))
+                try:
+                    rx, ry, rz = roundedoff(x,lx0,Lx,px), roundedoff(y,ly0,Ly,py), roundedoff(z,lz0,Lz,pz)
+                    self._container.put(n, rx, ry, rz, r)
+                except AssertionError:
+                    raise ValueError("Could not insert point {} at ({}, {}, {}): point not inside the box.".format(
+                        n, rx, ry, rz
+                    ))
         else:
             # no radii => use voro._Container
             self._container = _Container(lx0,lx, ly0,ly, lz0,lz,         # limits
@@ -154,8 +161,14 @@ class Container(list):
                                     px, py, pz,        # periodicity
                                     len(points))
             for n,(x,y,z) in enumerate(points):
-                self._container.put(n, roundedoff(x,Lx,px), roundedoff(y,Ly,py), roundedoff(z,Lz,pz))
-        
+                rx, ry, rz = roundedoff(x,lx0,Lx,px), roundedoff(y,ly0,Ly,py), roundedoff(z,lz0,Lz,pz)
+                try:
+                    self._container.put(n, rx, ry, rz)
+                except AssertionError:
+                    raise ValueError("Could not insert point {} at ({}, {}, {}): point not inside the box.".format(
+                        n, rx, ry, rz
+                    ))
+
         cells = self._container.get_cells()
         list.__init__(self, cells)
         
