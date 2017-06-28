@@ -181,3 +181,26 @@ class HCP(FCC):
     def test_volumes(self): self.volumes([1./sqrt(2.)])
     
     def test_neighbors(self): self.neighbors([12])
+
+class TestBoundaries(TestCase):
+    limits = ((-50, -20, 80), (-30, -10, 120))
+    
+    def test_container(self):
+        xs = [-31, -49]
+        ys = [-11, -19]
+        zs = [81, 119]
+
+        points = [(x, y, z) for x in xs for y in ys for z in zs]
+        cells1 = Container(points, limits=self.limits, periodic=False)
+        radii = [0.4 for p in points]
+        cells2 = Container(points, limits=self.limits, radii=radii)
+
+    def test_periodic(self):
+        xs = [1, 19]
+        ys = [1, 9]
+        zs = [1, 39]
+
+        points = [(x, y, z) for x in xs for y in ys for z in zs]
+        cells1 = Container(points, limits=self.limits, periodic=True)
+        radii = [0.4 for p in points]
+        cells2 = Container(points, limits=self.limits, radii=radii, periodic=True)
