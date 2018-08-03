@@ -65,6 +65,9 @@ class CubicLattice(LatticeTest):
         self.assertEqual(str(self.cells[-1]), '<Cell {0}>'.format(len(self.cells)-1))
         self.assertEqual(repr(self.cells[-1]), '<Cell {0}>'.format(len(self.cells)-1))
 
+class LargeCubicLattice(CubicLattice, TestCase):
+    n = 40
+    limits = (n, n, n)
 
 class BasicCubic(CubicLattice, TestCase):
     order = 0.35355339059328
