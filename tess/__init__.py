@@ -384,4 +384,3 @@ def orderQ(l, xyz, weights=1):
         sph_weighted = sph_harm(m, l, phi, theta).dot(weights)  # Average of Y_{6m}
         mmeans[m] = abs(sph_weighted) ** 2
     return np.sqrt(4 * np.pi / (2 * l + 1) * np.sum(mmeans))
-

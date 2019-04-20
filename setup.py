@@ -7,7 +7,7 @@ A 3D cell-based Voronoi library based on voro++
 
 `Code available`_ on Github.
 
-`Full documentation available`_ at Read the Docs. 
+`Full documentation available`_ at Read the Docs.
 
 .. _Code available: https://github.com/wackywendell/tess
 
@@ -18,15 +18,14 @@ Description
 
 Tess is a library to calculate Voronoi (and Laguerre) tessellations in 3D and analyze their
 structure. The tessellation is calculated as a `list` of `Cell` objects, each of which
-can give information on its volume, centroid, number of faces, surface area, etc. The library is 
-made with packings of spherical particles in mind, possibly with variable sizes. 
+can give information on its volume, centroid, number of faces, surface area, etc. The library is
+made with packings of spherical particles in mind, possibly with variable sizes.
 
 """
 
 from setuptools import setup
 from distutils.extension import Extension
 from distutils.command.sdist import sdist as _sdist
-import os.path
 
 try:
     from Cython.Build import cythonize
@@ -58,11 +57,14 @@ else:
         )
     ]
 
-# Set sdist to make the .cpp file
-# from http://stackoverflow.com/a/18418524/4190270
+
 class sdist(_sdist):
+    # Set sdist to make the .cpp file
+    # from http://stackoverflow.com/a/18418524/4190270
+
     def run(self):
-        # this is already imported, but the import might have failed. If so, raise an ImportError now.
+        # this is already imported, but the import might have failed.
+        # If so, raise an ImportError now.
         from Cython.Build import cythonize
 
         # Make sure the compiled Cython files in the distribution are up-to-date

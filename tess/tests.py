@@ -318,4 +318,3 @@ class TestBoundaries(TestCase):
         w1, w2 = c.get_walls()
         self.assertListAlmostEqual(limits[0], w1)
         self.assertListAlmostEqual(limits[1], w2)
-
