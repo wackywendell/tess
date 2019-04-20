@@ -242,8 +242,10 @@ class TestBoundaries(TestCase):
 
         points = [(x, y, z) for x in xs for y in ys for z in zs]
         cells1 = Container(points, limits=self.limits, periodic=False)
+        self.assertEqual(len(cells1), 8)
         radii = [0.4 for p in points]
         cells2 = Container(points, limits=self.limits, radii=radii)
+        self.assertEqual(len(cells2), 8)
 
     def test_periodic(self):
         xs = [1, 19]
@@ -252,5 +254,7 @@ class TestBoundaries(TestCase):
 
         points = [(x, y, z) for x in xs for y in ys for z in zs]
         cells1 = Container(points, limits=self.limits, periodic=True)
+        self.assertEqual(len(cells1), 8)
         radii = [0.4 for p in points]
         cells2 = Container(points, limits=self.limits, radii=radii, periodic=True)
+        self.assertEqual(len(cells2), 8)
