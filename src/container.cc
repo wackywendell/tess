@@ -93,37 +93,43 @@ container_poly::container_poly(double ax_, double bx_, double ay_, double by_, d
 /** Put a particle into the correct region of the container.
  * \param[in] n the numerical ID of the inserted particle.
  * \param[in] (x,y,z) the position vector of the inserted particle. */
-void container::put(int n, double x, double y, double z)
+bool container::put(int n, double x, double y, double z)
 {
 	int ijk;
-	if (put_locate_block(ijk, x, y, z))
+	if (!put_locate_block(ijk, x, y, z))
 	{
-		id[ijk][co[ijk]] = n;
-		double *pp = p[ijk] + 3 * co[ijk]++;
-		*(pp++) = x;
-		*(pp++) = y;
-		*pp = z;
+		return false;
 	}
+
+	id[ijk][co[ijk]] = n;
+	double *pp = p[ijk] + 3 * co[ijk]++;
+	*(pp++) = x;
+	*(pp++) = y;
+	*pp = z;
+	return true;
 }
 
 /** Put a particle into the correct region of the container.
  * \param[in] n the numerical ID of the inserted particle.
  * \param[in] (x,y,z) the position vector of the inserted particle.
  * \param[in] r the radius of the particle. */
-void container_poly::put(int n, double x, double y, double z, double r)
+bool container_poly::put(int n, double x, double y, double z, double r)
 {
 	int ijk;
-	if (put_locate_block(ijk, x, y, z))
+	if (!put_locate_block(ijk, x, y, z))
 	{
-		id[ijk][co[ijk]] = n;
-		double *pp = p[ijk] + 4 * co[ijk]++;
-		*(pp++) = x;
-		*(pp++) = y;
-		*(pp++) = z;
-		*pp = r;
-		if (max_radius < r)
-			max_radius = r;
+		return false;
 	}
+
+	id[ijk][co[ijk]] = n;
+	double *pp = p[ijk] + 4 * co[ijk]++;
+	*(pp++) = x;
+	*(pp++) = y;
+	*(pp++) = z;
+	*pp = r;
+	if (max_radius < r)
+		max_radius = r;
+	return true;
 }
 
 /** Put a particle into the correct region of the container, also recording
@@ -131,18 +137,22 @@ void container_poly::put(int n, double x, double y, double z, double r)
  * \param[in] vo the ordering class in which to record the region.
  * \param[in] n the numerical ID of the inserted particle.
  * \param[in] (x,y,z) the position vector of the inserted particle. */
-void container::put(particle_order &vo, int n, double x, double y, double z)
+bool container::put(particle_order &vo, int n, double x, double y, double z)
 {
 	int ijk;
-	if (put_locate_block(ijk, x, y, z))
+
+	if (!put_locate_block(ijk, x, y, z))
 	{
-		id[ijk][co[ijk]] = n;
-		vo.add(ijk, co[ijk]);
-		double *pp = p[ijk] + 3 * co[ijk]++;
-		*(pp++) = x;
-		*(pp++) = y;
-		*pp = z;
+		return false;
 	}
+
+	id[ijk][co[ijk]] = n;
+	vo.add(ijk, co[ijk]);
+	double *pp = p[ijk] + 3 * co[ijk]++;
+	*(pp++) = x;
+	*(pp++) = y;
+	*pp = z;
+	return true;
 }
 
 /** Put a particle into the correct region of the container, also recording
@@ -151,21 +161,25 @@ void container::put(particle_order &vo, int n, double x, double y, double z)
  * \param[in] n the numerical ID of the inserted particle.
  * \param[in] (x,y,z) the position vector of the inserted particle.
  * \param[in] r the radius of the particle. */
-void container_poly::put(particle_order &vo, int n, double x, double y, double z, double r)
+bool container_poly::put(particle_order &vo, int n, double x, double y, double z, double r)
 {
 	int ijk;
-	if (put_locate_block(ijk, x, y, z))
+
+	if (!put_locate_block(ijk, x, y, z))
 	{
-		id[ijk][co[ijk]] = n;
-		vo.add(ijk, co[ijk]);
-		double *pp = p[ijk] + 4 * co[ijk]++;
-		*(pp++) = x;
-		*(pp++) = y;
-		*(pp++) = z;
-		*pp = r;
-		if (max_radius < r)
-			max_radius = r;
+		return false;
 	}
+
+	id[ijk][co[ijk]] = n;
+	vo.add(ijk, co[ijk]);
+	double *pp = p[ijk] + 4 * co[ijk]++;
+	*(pp++) = x;
+	*(pp++) = y;
+	*(pp++) = z;
+	*pp = r;
+	if (max_radius < r)
+		max_radius = r;
+	return true;
 }
 
 /** This routine takes a particle position vector, tries to remap it into the
