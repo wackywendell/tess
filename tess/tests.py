@@ -258,3 +258,64 @@ class TestBoundaries(TestCase):
         radii = [0.4 for p in points]
         cells2 = Container(points, limits=self.limits, radii=radii, periodic=True)
         self.assertEqual(len(cells2), 8)
+
+    def test_out_of_bounds(self):
+        limits = [(6.03961, -2.5, 3), (9.63211, 8.66222, 8.68142)]
+        points = [
+            [9.63211, 0.1, 6.21613],
+            [6.86854, 0.1, 5.03901],
+            [8.64132, 0.1, 3],
+            [6.03961, 0.1, 4.95501],
+            [7.17098, 0.1, 8.68142],
+            [9.63211, 3.26588, 6.21613],
+            [6.86854, -0.57493, 5.03901],
+            [8.64132, 4.43874, 3],
+            [6.03961, 5.5544, 4.95501],
+            [7.17098, 6.71017, 8.68142],
+            [9.63211, 6.72764, 6.21613],
+            [6.86854, 2.83045, 5.03901],
+            [8.64132, 8.30812, 3],
+            [6.03961, 8.39531, 4.95501],
+            [7.17098, 8.66222, 8.68142],
+        ]
+
+        with self.assertRaises(ValueError):
+            Container(points, limits=limits, periodic=False)
+        with self.assertRaises(ValueError):
+            Container(points, limits=limits, radii=[0.1]*len(points), periodic=False)
+
+    def assertListAlmostEqual(self, first, second, places=None, msg=None, delta=None):
+        self.assertEqual(len(first), len(second), msg=msg)
+        for v1, v2 in zip(first, second):
+            self.assertAlmostEqual(v1, v2, places=places, msg=msg, delta=delta)
+
+    def test_get_widths(self):
+        limits = [(6, -2.5, 3), (10, 9, 9)]
+        points = [
+            [9.63211, 0.1, 6.21613],
+            [6.86854, 0.1, 5.03901],
+            [8.64132, 0.1, 3.8377],
+            [6.03961, 0.1, 4.95501],
+            [7.17098, 0.1, 8.68142],
+            [9.63211, 3.26588, 6.21613],
+            [6.86854, -0.57493, 5.03901],
+            [8.64132, 4.43874, 3.8377],
+            [6.03961, 5.5544, 4.95501],
+            [7.17098, 6.71017, 8.68142],
+            [9.63211, 6.72764, 6.21613],
+            [6.86854, 2.83045, 5.03901],
+            [8.64132, 8.30812, 3.8377],
+            [6.03961, 8.39531, 4.95501],
+            [7.17098, 8.66222, 8.68142],
+        ]
+
+        c = Container(points, limits=limits, periodic=False)
+        w1, w2 = c.get_walls()
+        self.assertListAlmostEqual(limits[0], w1)
+        self.assertListAlmostEqual(limits[1], w2)
+
+        c = Container(points, limits=limits, radii=[0.1]*len(points), periodic=False)
+        w1, w2 = c.get_walls()
+        self.assertListAlmostEqual(limits[0], w1)
+        self.assertListAlmostEqual(limits[1], w2)
+

@@ -13,6 +13,7 @@ cdef extern from "voro++.hh" namespace "voro":
         pass
     
     cdef cppclass container:
+        double ax, ay, az, bx, by, bz
         container(double,double,double,double,double,double,
                 int,int,int,cbool,cbool,cbool,int) except +
         cbool compute_cell(voronoicell_neighbor &c,c_loop_all &vl)
@@ -21,6 +22,7 @@ cdef extern from "voro++.hh" namespace "voro":
         int total_particles()
     
     cdef cppclass container_poly:
+        double ax, ay, az, bx, by, bz
         container_poly(double,double,double,double,double,double,
                 int,int,int,cbool,cbool,cbool,int) except +
         cbool compute_cell(voronoicell_neighbor &c, c_loop_all &vl)
@@ -251,6 +253,12 @@ cdef class Container:
         if vcells_left != 0:
             raise ValueError("Computation failed")
         return mylist
+    
+    def get_walls(self):
+        return (
+            (self.thisptr.ax, self.thisptr.ay, self.thisptr.az),
+            (self.thisptr.bx, self.thisptr.by, self.thisptr.bz),
+        )
 
 cdef class ContainerPoly:
     cdef container_poly *thisptr
@@ -297,3 +305,9 @@ cdef class ContainerPoly:
         if vcells_left != 0:
             raise ValueError("Computation failed")
         return mylist
+    
+    def get_walls(self):
+        return (
+            (self.thisptr.ax, self.thisptr.ay, self.thisptr.az),
+            (self.thisptr.bx, self.thisptr.by, self.thisptr.bz),
+        )
