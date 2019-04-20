@@ -17,7 +17,7 @@ cdef extern from "voro++.hh" namespace "voro":
                 int,int,int,cbool,cbool,cbool,int) except +
         cbool compute_cell(voronoicell_neighbor &c,c_loop_all &vl)
         cbool point_inside(double,double,double)
-        void put(int, double, double, double)
+        cbool put(int, double, double, double)
         int total_particles()
     
     cdef cppclass container_poly:
@@ -25,7 +25,7 @@ cdef extern from "voro++.hh" namespace "voro":
                 int,int,int,cbool,cbool,cbool,int) except +
         cbool compute_cell(voronoicell_neighbor &c, c_loop_all &vl)
         cbool point_inside(double,double,double)
-        void put(int, double, double, double, double)
+        cbool put(int, double, double, double, double)
         int total_particles()
         
         
@@ -215,7 +215,7 @@ cdef class Container:
     
     def put(self, int n, double x, double y, double z):
         assert self.thisptr.point_inside(x, y, z)
-        self.thisptr.put(n, x, y, z)
+        assert self.thisptr.put(n, x, y, z)
     
     def get_cells(self):
         cdef container_base *baseptr = (<container_base *>(self.thisptr))
@@ -264,7 +264,7 @@ cdef class ContainerPoly:
     
     def put(self, int n, double x, double y, double z, double r):
         assert self.thisptr.point_inside(x, y, z)
-        self.thisptr.put(n,x,y,z,r)
+        assert self.thisptr.put(n,x,y,z,r)
     
     def get_cells(self):
         cdef container_base *baseptr = (<container_base *>(self.thisptr))
