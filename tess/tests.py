@@ -1,4 +1,4 @@
-from . import *
+from . import Container
 from unittest import TestCase
 
 from math import sqrt
