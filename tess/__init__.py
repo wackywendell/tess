@@ -115,7 +115,7 @@ class Container(list):
         # make bx, by, bz from blocks, or make it up
         if blocks is None:
             V = Lx * Ly * Lz
-            Nthird = pow(N/V, 1.0/3.0)
+            Nthird = pow(N / V, 1.0 / 3.0)
             blocks = round(Nthird * Lx), round(Nthird * Ly), round(Nthird * Lz)
 
         try:
@@ -131,7 +131,7 @@ class Container(list):
         # Each coordinate (x,y,z) may or may not be periodic, so we'll deal with them separately.
         def roundedoff(n, lmin, l, periodic):
             if periodic:
-                v = (float(n)-lmin) % l + lmin
+                v = (float(n) - lmin) % l + lmin
                 return v
             else:
                 return float(n)
@@ -140,42 +140,80 @@ class Container(list):
         # Container is for no-radii.
         # Now we choose the right one.
         if radii is not None:
-            assert(len(radii) == len(points))
-            self._container = _ContainerPoly(lx0,lx, ly0,ly, lz0,lz, # limits
-                                bx, by, bz,        # block size
-                                px, py, pz,        # periodicity
-                                len(points))
+            assert len(radii) == len(points)
+            self._container = _ContainerPoly(
+                lx0,
+                lx,
+                ly0,
+                ly,
+                lz0,
+                lz,  # limits
+                bx,
+                by,
+                bz,  # block size
+                px,
+                py,
+                pz,  # periodicity
+                len(points),
+            )
 
-            for n,(x,y,z),r in zip(range(len(points)), points, radii):
+            for n, (x, y, z), r in zip(range(len(points)), points, radii):
                 try:
-                    rx, ry, rz = roundedoff(x,lx0,Lx,px), roundedoff(y,ly0,Ly,py), roundedoff(z,lz0,Lz,pz)
+                    rx, ry, rz = (
+                        roundedoff(x, lx0, Lx, px),
+                        roundedoff(y, ly0, Ly, py),
+                        roundedoff(z, lz0, Lz, pz),
+                    )
                     self._container.put(n, rx, ry, rz, r)
                 except AssertionError:
-                    raise ValueError("Could not insert point {} at ({}, {}, {}): point not inside the box.".format(
-                        n, rx, ry, rz
-                    ))
+                    raise ValueError(
+                        "Could not insert point {} at ({}, {}, {}): point not inside the box.".format(
+                            n, rx, ry, rz
+                        )
+                    )
         else:
             # no radii => use voro._Container
-            self._container = _Container(lx0,lx, ly0,ly, lz0,lz,         # limits
-                                    bx, by, bz,        # block size
-                                    px, py, pz,        # periodicity
-                                    len(points))
-            for n,(x,y,z) in enumerate(points):
-                rx, ry, rz = roundedoff(x,lx0,Lx,px), roundedoff(y,ly0,Ly,py), roundedoff(z,lz0,Lz,pz)
+            self._container = _Container(
+                lx0,
+                lx,
+                ly0,
+                ly,
+                lz0,
+                lz,  # limits
+                bx,
+                by,
+                bz,  # block size
+                px,
+                py,
+                pz,  # periodicity
+                len(points),
+            )
+            for n, (x, y, z) in enumerate(points):
+                rx, ry, rz = (
+                    roundedoff(x, lx0, Lx, px),
+                    roundedoff(y, ly0, Ly, py),
+                    roundedoff(z, lz0, Lz, pz),
+                )
                 try:
                     self._container.put(n, rx, ry, rz)
                 except AssertionError:
-                    raise ValueError("Could not insert point {} at ({}, {}, {}): point not inside the box.".format(
-                        n, rx, ry, rz
-                    ))
+                    raise ValueError(
+                        "Could not insert point {} at ({}, {}, {}): point not inside the box.".format(
+                            n, rx, ry, rz
+                        )
+                    )
 
         cells = self._container.get_cells()
         list.__init__(self, cells)
 
         # Sometimes a _Container has calculation issues. That can lead to the following.
         if len(self) != len(points):
-            raise ValueError("Points could not be suitably fitted into the given box. \n\
-You may want to check that all points are within the box, and none are overlapping. {} / {}".format(len(self), len(points)))
+            raise ValueError(
+                "Points could not be suitably fitted into the given box. \n\
+You may want to check that all points are within the box, and none are overlapping. {} / {}".format(
+                    len(self), len(points)
+                )
+            )
 
     def get_widths(self):
         "Get the size of the box."
@@ -186,7 +224,7 @@ You may want to check that all points are within the box, and none are overlappi
 
         (dx,dy,dz) is the normal, and A is the area of the voronoi face."""
         return [
-            [(x,y,z,A) for (x,y,z), A in zip(vc.normals(), vc.face_areas())]
+            [(x, y, z, A) for (x, y, z), A in zip(vc.normals(), vc.face_areas())]
             for vc in self
         ]
 
@@ -250,7 +288,7 @@ You may want to check that all points are within the box, and none are overlappi
         Qs = []
         for blst in bonds:
             blst = np.array(blst)
-            xyz, A = blst[:,:3], blst[:,3]
+            xyz, A = blst[:, :3], blst[:, 3]
             Q = orderQ(l, xyz, weights=(A if weighted else 1))
             if local:
                 Q = Q * float(np.shape(xyz)[0])
@@ -258,11 +296,12 @@ You may want to check that all points are within the box, and none are overlappi
         if local:
             return np.sum(Qs) / Nb
         else:
-            assert(len(Qs) == 1)
+            assert len(Qs) == 1
         return np.mean(Qs)
 
+
 def cart_to_spher(xyz):
-    """Converts 3D cartesian coordinates to the angular portion of spherical coordinates, (theta, phi).
+    r"""Converts 3D cartesian coordinates to the angular portion of spherical coordinates, (theta, phi).
 
     Requires numpy.
 
@@ -280,10 +319,13 @@ def cart_to_spher(xyz):
     array, Nx2
     """
     import numpy as np
-    ptsnew = np.zeros((xyz.shape[0],2))
-    xy = xyz[:,0]**2 + xyz[:,1]**2
-    ptsnew[:,0] = np.arctan2(np.sqrt(xy), xyz[:,2]) # for elevation angle defined from Z-axis down
-    ptsnew[:,1] = np.arctan2(xyz[:,1], xyz[:,0])
+
+    ptsnew = np.zeros((xyz.shape[0], 2))
+    xy = xyz[:, 0] ** 2 + xyz[:, 1] ** 2
+    ptsnew[:, 0] = np.arctan2(
+        np.sqrt(xy), xyz[:, 2]
+    )  # for elevation angle defined from Z-axis down
+    ptsnew[:, 1] = np.arctan2(xyz[:, 1], xyz[:, 0])
     return ptsnew
 
 
@@ -330,8 +372,9 @@ def orderQ(l, xyz, weights=1):
     theta, phi = cart_to_spher(xyz).T
     weights = np.ones(xyz.shape[0]) * weights
     weights /= np.sum(weights)
-    mmeans = np.zeros(2*l+1, dtype=float)
-    for m in range(-l, l+1):
-        sph_weighted = sph_harm(m, l, phi, theta).dot(weights) # Average of Y_{6m}
-        mmeans[m] = abs(sph_weighted)**2
-    return np.sqrt(4*np.pi/(2*l+1) * np.sum(mmeans))
+    mmeans = np.zeros(2 * l + 1, dtype=float)
+    for m in range(-l, l + 1):
+        sph_weighted = sph_harm(m, l, phi, theta).dot(weights)  # Average of Y_{6m}
+        mmeans[m] = abs(sph_weighted) ** 2
+    return np.sqrt(4 * np.pi / (2 * l + 1) * np.sum(mmeans))
+
