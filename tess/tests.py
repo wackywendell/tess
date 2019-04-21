@@ -282,7 +282,7 @@ class TestBoundaries(TestCase):
         with self.assertRaises(ValueError):
             Container(points, limits=limits, periodic=False)
         with self.assertRaises(ValueError):
-            Container(points, limits=limits, radii=[0.1]*len(points), periodic=False)
+            Container(points, limits=limits, radii=[0.1] * len(points), periodic=False)
 
     def assertListAlmostEqual(self, first, second, places=None, msg=None, delta=None):
         self.assertEqual(len(first), len(second), msg=msg)
@@ -314,7 +314,7 @@ class TestBoundaries(TestCase):
         self.assertListAlmostEqual(limits[0], w1)
         self.assertListAlmostEqual(limits[1], w2)
 
-        c = Container(points, limits=limits, radii=[0.1]*len(points), periodic=False)
+        c = Container(points, limits=limits, radii=[0.1] * len(points), periodic=False)
         w1, w2 = c.get_walls()
         self.assertListAlmostEqual(limits[0], w1)
         self.assertListAlmostEqual(limits[1], w2)
