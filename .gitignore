@@ -29,6 +29,7 @@ html
 .ipynb_checkpoints
 *.egg-info
 *-testing.*
+.pytest_cache
 MANIFEST
 /dist
 /build

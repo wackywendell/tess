@@ -5,7 +5,7 @@
 # Date   : August 30th 2011
 
 # Tell make that these are phony targets
-.PHONY: all help clean install uninstall
+.PHONY: all help clean install uninstall release
 
 include config.mk
 
@@ -70,3 +70,8 @@ uninstall:
 	rm -f $(PREFIX)/include/voro++/wall.hh
 	rm -f $(PREFIX)/include/voro++/worklist.hh
 	rmdir $(PREFIX)/include/voro++
+
+release: all
+	python setup.py build_ext
+	python setup.py sdist bdist_wheel
+	twine upload dist/*

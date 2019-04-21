@@ -17,17 +17,21 @@ cdef extern from "voro++.hh" namespace "voro":
         pass
 
     cdef cppclass container:
+        double ax, ay, az, bx, by, bz
         container(double,double,double,double,double,double,
                 int,int,int,cbool,cbool,cbool,int) except +
         cbool compute_cell(voronoicell_neighbor &c,c_loop_all &vl)
-        void put(int, double, double, double)
+        cbool point_inside(double,double,double)
+        cbool put(int, double, double, double)
         int total_particles()
 
     cdef cppclass container_poly:
+        double ax, ay, az, bx, by, bz
         container_poly(double,double,double,double,double,double,
                 int,int,int,cbool,cbool,cbool,int) except +
         cbool compute_cell(voronoicell_neighbor &c, c_loop_all &vl)
-        void put(int, double, double, double, double)
+        cbool point_inside(double,double,double)
+        cbool put(int, double, double, double, double)
         int total_particles()
 
     cdef cppclass container_periodic:
@@ -235,7 +239,8 @@ cdef class Container:
         del self.thisptr
 
     def put(self, int n, double x, double y, double z):
-        self.thisptr.put(n,x,y,z)
+        assert self.thisptr.point_inside(x, y, z)
+        assert self.thisptr.put(n, x, y, z)
 
     def get_cells(self):
         cdef container_base *baseptr = (<container_base *>(self.thisptr))
@@ -271,6 +276,12 @@ cdef class Container:
         if vcells_left != 0:
             raise ValueError("Computation failed")
         return mylist
+    
+    def get_walls(self):
+        return (
+            (self.thisptr.ax, self.thisptr.ay, self.thisptr.az),
+            (self.thisptr.bx, self.thisptr.by, self.thisptr.bz),
+        )
 
 cdef class ContainerPoly:
     cdef container_poly *thisptr
@@ -283,7 +294,8 @@ cdef class ContainerPoly:
         del self.thisptr
 
     def put(self, int n, double x, double y, double z, double r):
-        self.thisptr.put(n,x,y,z,r)
+        assert self.thisptr.point_inside(x, y, z)
+        assert self.thisptr.put(n,x,y,z,r)
 
     def get_cells(self):
         cdef container_base *baseptr = (<container_base *>(self.thisptr))
@@ -316,6 +328,12 @@ cdef class ContainerPoly:
         if vcells_left != 0:
             raise ValueError("Computation failed")
         return mylist
+    
+    def get_walls(self):
+        return (
+            (self.thisptr.ax, self.thisptr.ay, self.thisptr.az),
+            (self.thisptr.bx, self.thisptr.by, self.thisptr.bz),
+        )
 
 cdef class ContainerPeriodic:
     cdef container_periodic *thisptr
