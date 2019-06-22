@@ -154,7 +154,7 @@ class Container(list):
                 px,
                 py,
                 pz,  # periodicity
-                len(points),
+                8,   # the initial memory allocation for each block
             )
 
             for n, (x, y, z), r in zip(range(len(points)), points, radii):
@@ -186,7 +186,7 @@ class Container(list):
                 px,
                 py,
                 pz,  # periodicity
-                len(points),
+                8,   # the initial memory allocation for each block
             )
             for n, (x, y, z) in enumerate(points):
                 rx, ry, rz = (
