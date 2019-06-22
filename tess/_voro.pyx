@@ -228,6 +228,40 @@ cdef class Cell:
     def __repr__(self):
         return '<Cell {0}>'.format(self._id)
 
+
+cdef _cells_from_loop(cntr, loop, radius=None):
+    cell = Cell()
+
+    cdef int vcells = cntr.total_particles()
+    cdef int vcells_left = vcells
+
+    mylist = [None for _ in range(vcells_left)]
+
+    if not loop.start():
+        raise ValueError("Failed to start loop")
+
+    while True:
+        if(cntr.compute_cell(dereference(cell.thisptr), dereference(vl))):
+            cell._id = loop.pid()
+            assert cell._id < vcells, (
+                "Cell id %s larger than total %s" % (cell._id, vcells))
+
+            if radius is None:
+                loop.pos(cell.x, cell.y, cell.z, cell.r)
+            else:
+                loop.pos(cell.x, cell.y, cell.z)
+                cell.r = radius
+            mylist[cell._id] = cell
+
+            vcells_left -= 1
+            cell = Cell()
+        if not loop.inc(): break
+
+    if vcells_left != 0:
+        raise ValueError("Computation failed")
+    return mylist
+
+
 cdef class Container:
     cdef container *thisptr
     def __cinit__(self, double ax_,double bx_,double ay_,double by_,double az_,double bz_,
