@@ -280,36 +280,9 @@ cdef class Container:
         cdef container_base *baseptr = (<container_base *>(self.thisptr))
         cdef c_loop_all *vl = new c_loop_all(dereference(baseptr))
 
-        cell = Cell()
-
-        cdef int vcells_left = self.thisptr.total_particles()
-        cdef int id
-
-        mylist = [None for _ in range(vcells_left)]
-
-        if not vl.start():
-            del vl
-            raise ValueError("Failed to start loop")
-
-        while True:
-            if(self.thisptr.compute_cell(dereference(cell.thisptr), dereference(vl))):
-                cell._id = vl.pid()
-                assert cell._id < self.thisptr.total_particles(), (
-                    "Cell id %s larger than total %s" % (cell._id, self.thisptr.total_particles()))
-
-                vl.pos(cell.x,cell.y,cell.z)
-                cell.r = 0
-                mylist[cell._id] = cell
-
-                vcells_left -= 1
-                cell = Cell()
-            if not vl.inc(): break
-
+        cells = _cells_from_loop(self.thisptr, vl, radius=0)
         del vl
-
-        if vcells_left != 0:
-            raise ValueError("Computation failed")
-        return mylist
+        return cells
     
     def get_walls(self):
         return (
