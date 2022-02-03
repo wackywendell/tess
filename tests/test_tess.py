@@ -1,4 +1,4 @@
-from . import Container
+from tess import Container
 from unittest import TestCase
 
 from math import sqrt
@@ -8,6 +8,39 @@ try:
     import scipy
 except ImportError:
     scipy = None
+
+
+def test_cell_methods():
+    """Simple checks for the Cell method bindings
+    """
+    cell_positions = [[1., 1., 1.], [2., 2., 2.]]
+    cell_radii = [0.2, 0.1]
+
+    cells = Container(
+        cell_positions, radii=cell_radii, limits=(3,3,3), periodic=False
+    )
+
+    for i, cell in enumerate(cells):
+
+        assert cell.id == i
+        assert np.allclose(cell.pos, cell_positions[i])
+        assert np.isclose(cell.radius, cell_radii[i])
+        assert cell.volume() > 0.0
+        assert cell.max_radius_squared() > 0.0
+        assert cell.total_edge_distance() > 0.0
+        assert cell.surface_area() > 0.0
+        assert cell.number_of_faces() > 0
+        assert cell.number_of_edges() > 0
+        assert len(cell.centroid()) == 3
+        assert len(cell.vertex_orders()) > 0
+        assert len(cell.vertices()) > 0
+        assert len(cell.face_areas()) > 0
+        assert len(cell.face_freq_table()) > 0
+        assert len(cell.face_vertices()) > 0
+        assert len(cell.face_perimeters()) > 0
+        assert len(cell.normals()) > 0
+        assert len(cell.neighbors()) > 0
+        assert str(cell) == repr(cell) == f"<Cell {i}>"
 
 
 class LatticeTest:
