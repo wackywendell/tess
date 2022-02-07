@@ -22,43 +22,22 @@ can give information on its volume, centroid, number of faces, surface area, etc
 made with packings of spherical particles in mind, possibly with variable sizes.
 
 """
+import importlib
+from setuptools import setup, Extension
+from setuptools.command.sdist import sdist
 
-from setuptools import setup
-from distutils.extension import Extension
-from distutils.command.sdist import sdist as _sdist
 
-try:
-    from Cython.Build import cythonize
-except ImportError:
-    cythonize = None
-
-extension_version = "0.3.1"
-
-if cythonize is not None:
-    print("Building with Cython.")
-    ext = cythonize(
-        [
-            Extension(
-                "tess._voro",
-                sources=["tess/_voro.pyx", "src/voro++.cc"],
-                include_dirs=["src"],
-                language="c++",
-            )
-        ]
-    )
-else:
-    print("Cython not found, using prebuilt file.")
-    ext = [
-        Extension(
+# setuptools transparently fallback to using the cpp file if cython is not available. See:
+# https://setuptools.pypa.io/en/latest/userguide/distribution.html#distributing-extensions-compiled-with-cython
+extension = Extension(
             "tess._voro",
-            sources=["tess/_voro.cpp", "src/voro++.cc"],
+            sources=["tess/_voro.pyx", "src/voro++.cc"],
             include_dirs=["src"],
             language="c++",
-        )
-    ]
+)
 
 
-class sdist(_sdist):
+class cython_sdist(sdist):
     # Set sdist to make the .cpp file
     # from http://stackoverflow.com/a/18418524/4190270
 
@@ -66,18 +45,14 @@ class sdist(_sdist):
         # this is already imported, but the import might have failed.
         # If so, raise an ImportError now.
         from Cython.Build import cythonize
-
         # Make sure the compiled Cython files in the distribution are up-to-date
         cythonize(["tess/_voro.pyx"])
-        _sdist.run(self)
+        sdist.run(self)
 
-
-cmdclass = dict(sdist=sdist)
 
 # create the extension and add it to the python distribution
 setup(
     name="tess",
-    version=extension_version,
     author="Wendell Smith",
     author_email="wackywendell@gmail.com",
     description=("A module for calculating and analyzing Voronoi tessellations"),
@@ -96,6 +71,11 @@ setup(
     ],
     packages=["tess"],
     package_dir={"tess": "tess"},
-    ext_modules=ext,
-    cmdclass=cmdclass,
+    cmdclass={'sdist': cython_sdist},
+    ext_modules=[extension],
+    use_scm_version=True,
+    setup_requires=["setuptools>=40.9.0", "wheel", "setuptools_scm"],
+    extras_require={
+        'tests': ["numpy", "scipy", "sphinx", "sphinx_rtd_theme"],
+    },
 )

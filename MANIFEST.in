@@ -1,4 +1,4 @@
 include README.rst
 include LICENSE
 recursive-include src *.cc *.hh
-include tess/_voro.pyx
+include tess/_voro.pyx tess/_voro.cpp

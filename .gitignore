@@ -3,6 +3,7 @@ src/libvoro++.a
 *.o
 *.so
 *.pyc
+.eggs
 tess/_voro.cpp
 examples/walls/torus
 examples/walls/tetrahedron
@@ -37,3 +38,4 @@ __pycache__
 /docs/.build
 /docs/.templates
 /docs/.static
+.tox/
