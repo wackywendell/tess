@@ -37,3 +37,4 @@ __pycache__
 /docs/.build
 /docs/.templates
 /docs/.static
+.vscode/
