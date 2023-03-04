@@ -142,7 +142,17 @@ cdef class Cell:
         cdef vector[double] v
         self.thisptr.face_areas(v)
         return v
-    
+
+    def face_orders(self):
+        """A list of the number of edges per face.
+
+        Returns
+        -------
+        A list of integers. Each integer corresponds to the number of edges of the respective face."""
+        cdef vector[int] v
+        self.thisptr.face_orders(v)
+        return v
+
     def face_freq_table(self):
         cdef vector[int] v
         self.thisptr.face_freq_table(v)
